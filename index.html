@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LMMMO - Make Money Online Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { primary: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' } } }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- MENU ĐIỀU HƯỚNG -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 overflow-x-auto hide-scrollbar">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="switchTab('home-tab', this)">
+                    <div class="bg-primary-600 p-2 rounded-lg text-white"><i class="fas fa-cog"></i></div>
+                    <span class="text-2xl font-bold text-primary-700 hidden md:block">LMMMO</span>
+                </div>
+                <!-- Menu Links -->
+                <div class="flex space-x-2 md:space-x-4 items-center nav-menu flex-shrink-0 ml-4">
+                    <button onclick="switchTab('home-tab', this)" class="nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap">Tổng quan</button>
+                    <button onclick="switchTab('tool-free-tab', this)" class="nav-btn hover:text-primary-600 font-medium whitespace-nowrap">Tool Free</button>
+                    <button onclick="switchTab('resource-tab', this)" class="nav-btn hover:text-primary-600 font-medium whitespace-nowrap">Tài nguyên</button>
+                    <button onclick="switchTab('jobs-tab', this)" class="nav-btn hover:text-primary-600 font-medium whitespace-nowrap">Việc làm</button>
+                    <button onclick="switchTab('social-tab', this)" class="nav-btn hover:text-primary-600 font-bold text-red-500 whitespace-nowrap"><i class="fas fa-fire mr-1"></i>Cộng đồng</button>
+                    
+                    <!-- Nút Nạp tiền & Đăng nhập -->
+                    <div class="flex gap-2 items-center border-l pl-4 ml-2">
+                        <button onclick="switchTab('deposit-tab', this)" class="hidden md:flex items-center gap-2 bg-primary-50 text-primary-700 px-4 py-2 rounded-full font-semibold border border-primary-200 hover:bg-primary-100 transition">
+                            <i class="fas fa-wallet"></i> <span id="balance-display">0đ</span>
+                        </button>
+                        <button id="btn-show-login" onclick="toggleAuthModal(true)" class="bg-gray-800 text-white px-4 py-2 rounded-full font-bold hover:bg-gray-700 transition whitespace-nowrap">Đăng nhập</button>
+                        <div id="user-profile" class="hidden flex items-center gap-2 cursor-pointer bg-gray-100 px-3 py-1.5 rounded-full">
+                            <div class="w-8 h-8 bg-primary-200 text-primary-700 rounded-full flex items-center justify-center font-bold text-sm"><i class="fas fa-user"></i></div>
+                            <span id="display-username" class="font-bold text-sm"></span>
+                            <button onclick="logout()" class="text-xs text-red-500 hover:text-red-700 ml-2"><i class="fas fa-sign-out-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: TỔNG QUAN -->
+        <div id="home-tab" class="tab-content block">
+            <div class="bg-gradient-to-r from-green-400 to-green-300 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between shadow-lg">
+                <div class="md:w-1/2 text-white">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">LMMMO - Hệ Sinh Thái MMO</h1>
+                    <p class="text-lg mb-6 text-green-50">Cung cấp tool tự động hóa, tài nguyên MMO, nền tảng tìm việc và cộng đồng chia sẻ trick/tuts chuyên nghiệp.</p>
+                    <div class="flex gap-4">
+                        <button onclick="switchTab('tool-free-tab', document.querySelectorAll('.nav-btn')[1])" class="bg-white text-green-600 px-6 py-3 rounded-full font-bold shadow hover:bg-gray-100 transition">Dùng Tool Free</button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 mt-8 md:mt-0 flex justify-center">
+                    <div class="w-80 h-60 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 flex items-center justify-center shadow-2xl relative animate-bounce">
+                        <i class="fas fa-cubes text-6xl text-white/70"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: TOOL FREE -->
+        <div id="tool-free-tab" class="tab-content hidden">
+            <div class="text-center mb-10"><h2 class="text-3xl font-bold mb-2">Công Cụ Miễn Phí</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Giữ lại duy nhất form Dịch Sub Trung Việt như yêu cầu -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <i class="fas fa-language text-3xl text-primary-500 mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Dịch Sub Trung - Việt</h3>
+                    <p class="text-gray-500 text-sm mb-4">Upload file .srt và dịch tự động siêu tốc miễn phí.</p>
+                    <button class="w-full bg-primary-50 text-primary-600 py-2 rounded-lg font-bold hover:bg-primary-100">Sử dụng ngay</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: TÀI NGUYÊN MMO -->
+        <div id="resource-tab" class="tab-content hidden">
+            <div class="mb-6"><h2 class="text-3xl font-bold">Chợ Tài Nguyên MMO</h2></div>
+            <!-- Đã xóa các sản phẩm mẫu -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="resource-list">
+                <!-- Trống: Sẽ điền tài nguyên sau -->
+            </div>
+            <div class="text-center text-gray-400 mt-10"><i class="fas fa-box-open text-4xl mb-2"></i><p>Chưa có tài nguyên nào được đăng bán.</p></div>
+        </div>
+
+        <!-- TAB 4: VIỆC LÀM MMO -->
+        <div id="jobs-tab" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold">Tìm Việc MMO</h2>
+                <button onclick="alert('Bảng nhập thông tin đăng tin sẽ hiện ra ở đây!')" class="bg-primary-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-700 transition">Đăng tin</button>
+            </div>
+            <!-- Đã xóa việc làm mẫu -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="job-list">
+                <!-- Trống: Sẽ điền tin tuyển dụng sau -->
+            </div>
+            <div class="text-center text-gray-400 mt-10"><i class="fas fa-briefcase text-4xl mb-2"></i><p>Chưa có tin tuyển dụng nào.</p></div>
+        </div>
+
+        <!-- TAB 4.1: CHI TIẾT JOB -->
+        <div id="job-detail-tab" class="tab-content hidden max-w-4xl mx-auto">
+            <button onclick="switchTab('jobs-tab')" class="text-gray-500 mb-4"><i class="fas fa-arrow-left"></i> Quay lại</button>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                <h1 class="text-3xl font-bold mt-4 mb-6" id="job-detail-title">Tiêu đề công việc</h1>
+                <div class="flex gap-3 mb-6">
+                    <button class="bg-primary-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-700 flex items-center gap-2"><i class="fas fa-paper-plane"></i> Nhận việc</button>
+                </div>
+                <p id="job-detail-desc">Mô tả công việc sẽ hiển thị ở đây.</p>
+            </div>
+        </div>
+
+        <!-- TAB 5: CHAT -->
+        <div id="chat-tab" class="tab-content hidden h-[600px] bg-white rounded-2xl shadow-sm border border-gray-200 flex overflow-hidden">
+            <div class="w-1/3 border-r border-gray-200 bg-gray-50 flex flex-col">
+                <div class="p-4 border-b border-gray-200 bg-white"><h3 class="font-bold text-lg">Tin nhắn</h3></div>
+                <div class="overflow-y-auto flex-1">
+                    <div class="p-4 text-center text-gray-400 mt-4"><p>Chưa có cuộc trò chuyện nào.</p></div>
+                </div>
+            </div>
+            <div class="w-2/3 flex flex-col items-center justify-center bg-gray-50">
+                <i class="far fa-comments text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">Chọn một cuộc trò chuyện để bắt đầu</p>
+            </div>
+        </div>
+
+        <!-- TAB 6: NẠP TIỀN -->
+        <div id="deposit-tab" class="tab-content hidden max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-6">Nạp Tiền Vào Tài Khoản</h2>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                <div id="deposit-form">
+                    <input type="number" id="amount" placeholder="VD: 50000" class="w-full border p-4 rounded-xl mb-4 text-lg" value="10000">
+                    <button onclick="generateQR()" class="w-full bg-primary-600 text-white font-bold py-4 rounded-xl">Tạo lệnh nạp tiền</button>
+                </div>
+                <div id="qr-section" class="hidden mt-8 text-center border-t pt-8">
+                    <h3 class="text-xl font-bold text-green-600 mb-4">Quét mã để thanh toán</h3>
+                    <div class="inline-block border-4 border-primary-100 rounded-2xl p-4 mb-4"><img id="qr-image" src="" class="w-64 h-64"></div>
+                    <div class="bg-gray-50 p-4 rounded-xl text-left text-sm">
+                        <p>Ngân hàng: <strong>MB Bank</strong></p>
+                        <p>STK: <strong>0346099785 (LUONG BINH MINH)</strong></p>
+                        <p>Nội dung: <strong id="display-content" class="text-primary-600"></strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7: CỘNG ĐỒNG CHIA SẺ KINH NGHIỆM -->
+        <div id="social-tab" class="tab-content hidden max-w-3xl mx-auto">
+            <!-- Box Đăng bài -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500"><i class="fas fa-user"></i></div>
+                    <input type="text" id="post-input" placeholder="Chia sẻ tool, trick hoặc kinh nghiệm MMO của bạn..." class="flex-1 bg-gray-100 rounded-full px-4 outline-none hover:bg-gray-200 transition cursor-pointer" onkeypress="if(event.key === 'Enter') createPost()">
+                </div>
+                <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+                    <div class="flex gap-4">
+                        <button class="text-gray-500 hover:text-green-600 font-medium flex items-center gap-2"><i class="fas fa-image text-green-500"></i> Ảnh/Video</button>
+                        <button class="text-gray-500 hover:text-blue-600 font-medium flex items-center gap-2"><i class="fas fa-code text-blue-500"></i> Code/Script</button>
+                    </div>
+                    <button onclick="createPost()" class="bg-primary-600 text-white px-6 py-1.5 rounded-full font-bold hover:bg-primary-700">Đăng</button>
+                </div>
+            </div>
+
+            <!-- Newsfeed (Bảng tin) -->
+            <div id="newsfeed" class="flex flex-col gap-6">
+                <!-- Đã xóa bài đăng mẫu, feed trống -->
+            </div>
+            <div class="text-center text-gray-400 mt-4" id="empty-feed-msg"><i class="fas fa-newspaper text-4xl mb-2"></i><p>Chưa có bài viết nào. Hãy là người đầu tiên chia sẻ!</p></div>
+        </div>
+
+    </main>
+
+    <!-- MODAL ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all relative">
+            <button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-xl"><i class="fas fa-times"></i></button>
+            <div class="p-8">
+                <div class="text-center mb-8">
+                    <div class="w-12 h-12 bg-primary-600 text-white rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg"><i class="fas fa-shield-alt"></i></div>
+                    <h2 id="auth-title" class="text-2xl font-bold text-gray-900">Đăng nhập hệ thống</h2>
+                </div>
+                <div id="login-form" class="block">
+                    <div class="space-y-4">
+                        <div><input type="text" id="login-identifier" class="w-full border border-gray-300 rounded-xl px-4 py-3" placeholder="Tên đăng nhập"></div>
+                        <div><input type="password" id="login-password" class="w-full border border-gray-300 rounded-xl px-4 py-3" placeholder="••••••••"></div>
+                        <div id="login-error" class="text-red-500 text-sm hidden font-medium">Sai tài khoản hoặc mật khẩu!</div>
+                        <button onclick="handleLogin()" class="w-full bg-primary-600 text-white font-bold rounded-xl py-3 hover:bg-primary-700 transition">Đăng nhập ngay</button>
+                    </div>
+                    <p class="text-center text-sm text-gray-600 mt-6">Chưa có tài khoản? <button onclick="switchAuthView('register')" class="text-primary-600 font-bold hover:underline">Đăng ký ngay</button></p>
+                </div>
+                <div id="register-form" class="hidden">
+                    <div class="space-y-3">
+                        <div><input type="email" id="reg-email" class="w-full border border-gray-300 rounded-xl px-4 py-2" placeholder="Email"></div>
+                        <div><input type="text" id="reg-username" class="w-full border border-gray-300 rounded-xl px-4 py-2" placeholder="Tên đăng nhập"></div>
+                        <div><input type="password" id="reg-password" class="w-full border border-gray-300 rounded-xl px-4 py-2" placeholder="Mật khẩu"></div>
+                        <div><input type="password" id="reg-confirm" class="w-full border border-gray-300 rounded-xl px-4 py-2" placeholder="Nhập lại mật khẩu"></div>
+                        <div id="reg-error" class="text-red-500 text-sm hidden font-medium"></div>
+                        <button onclick="handleRegister()" class="w-full bg-gray-900 text-white font-bold rounded-xl py-3 hover:bg-black transition mt-2">Tạo tài khoản</button>
+                    </div>
+                    <p class="text-center text-sm text-gray-600 mt-4">Đã có tài khoản? <button onclick="switchAuthView('login')" class="text-primary-600 font-bold hover:underline">Đăng nhập</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT XỬ LÝ GIAO DIỆN -->
+    <script>
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => { tab.classList.add('hidden'); tab.classList.remove('block'); });
+            document.getElementById(tabId).classList.remove('hidden'); document.getElementById(tabId).classList.add('block');
+            if(btnElement && btnElement.classList.contains('nav-btn')) {
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.className = 'nav-btn hover:text-primary-600 font-medium whitespace-nowrap');
+                btnElement.className = tabId === 'social-tab' ? 'nav-btn text-red-600 font-bold border-b-2 border-red-600 whitespace-nowrap' : 'nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function openChat(username) {
+            document.getElementById('chat-list-name').innerText = username;
+            document.getElementById('chat-header-name').innerText = username;
+            switchTab('chat-tab', null);
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.className = 'nav-btn hover:text-primary-600 font-medium whitespace-nowrap');
+        }
+
+        function createPost() {
+            const input = document.getElementById('post-input');
+            if(!input.value.trim()) return;
+
+            const savedUserStr = localStorage.getItem('lmmmo_user');
+            const authorName = localStorage.getItem('is_logged_in') === 'true' && savedUserStr ? JSON.parse(savedUserStr).username : "Bạn";
+            const initial = authorName.charAt(0).toUpperCase();
+
+            document.getElementById('empty-feed-msg').style.display = 'none';
+
+            const newPostHTML = `
+                <div class="post-card bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 flex justify-between items-start">
+                        <div class="flex gap-3 items-center">
+                            <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold">${initial}</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">${authorName}</h4>
+                                <p class="text-xs text-gray-500">Vừa xong</p>
+                            </div>
+                        </div>
+                        <button onclick="this.closest('.post-card').remove()" class="text-gray-400 hover:text-red-500 bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-bold transition flex items-center gap-2">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </div>
+                    <div class="px-4 pb-3"><p class="text-gray-800">${input.value}</p></div>
+                    <div class="px-4 py-2 flex gap-6 border-y border-gray-100 text-gray-500 font-medium text-sm">
+                        <button onclick="toggleLike(this)" class="hover:text-red-500 flex items-center gap-2 transition"><i class="far fa-heart"></i> <span class="like-count">0</span> Thích</button>
+                        <button class="hover:text-primary-600 flex items-center gap-2"><i class="far fa-comment"></i> <span class="comment-count">0</span> Bình luận</button>
+                    </div>
+                    <div class="p-4 bg-gray-50">
+                        <div class="comment-list flex flex-col gap-3 mb-3"></div>
+                        <div class="flex gap-2 items-center mt-2">
+                            <input type="text" placeholder="Viết bình luận..." class="comment-input flex-1 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm outline-none" onkeypress="if(event.key === 'Enter') addComment(this)">
+                            <button onclick="addComment(this.previousElementSibling)" class="text-primary-600 font-bold px-2 hover:text-primary-800"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('newsfeed').insertAdjacentHTML('afterbegin', newPostHTML);
+            input.value = '';
+        }
+
+        function toggleLike(btn) {
+            const countSpan = btn.querySelector('.like-count');
+            const icon = btn.querySelector('i');
+            let count = parseInt(countSpan.innerText);
+            if(btn.classList.contains('text-red-500')) {
+                btn.classList.remove('text-red-500'); icon.classList.replace('fas', 'far'); countSpan.innerText = count - 1;
+            } else {
+                btn.classList.add('text-red-500'); icon.classList.replace('far', 'fas'); countSpan.innerText = count + 1;
+            }
+        }
+
+        function addComment(inputElement) {
+            const text = inputElement.value.trim();
+            if(!text) return;
+            const savedUserStr = localStorage.getItem('lmmmo_user');
+            const authorName = localStorage.getItem('is_logged_in') === 'true' && savedUserStr ? JSON.parse(savedUserStr).username : "Khách";
+            const initial = authorName.charAt(0).toUpperCase();
+            const commentHTML = `
+                <div class="flex gap-2">
+                    <div class="w-8 h-8 bg-primary-100 text-primary-600 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold">${initial}</div>
+                    <div class="bg-white p-2 px-3 rounded-2xl border border-gray-200">
+                        <span class="font-bold text-sm text-gray-800">${authorName}:</span>
+                        <span class="text-sm text-gray-600"> ${text}</span>
+                    </div>
+                </div>
+            `;
+            const postCard = inputElement.closest('.post-card');
+            postCard.querySelector('.comment-list').insertAdjacentHTML('beforeend', commentHTML);
+            const commentCountSpan = postCard.querySelector('.comment-count');
+            commentCountSpan.innerText = parseInt(commentCountSpan.innerText) + 1;
+            inputElement.value = '';
+        }
+
+        function toggleAuthModal(show) {
+            document.getElementById('auth-modal').classList.toggle('hidden', !show);
+            if(show) switchAuthView('login');
+        }
+        function switchAuthView(view) {
+            const isLogin = view === 'login';
+            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('register-form').classList.toggle('hidden', isLogin);
+            document.getElementById('auth-title').innerText = isLogin ? "Đăng nhập hệ thống" : "Tạo tài khoản mới";
+        }
+        function handleRegister() {
+            const email = document.getElementById('reg-email').value;
+            const username = document.getElementById('reg-username').value;
+            const pass = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            if(!email || !username || !pass) return alert("Vui lòng điền đủ thông tin!");
+            if(pass !== confirm) return alert("Mật khẩu không khớp!");
+            localStorage.setItem('lmmmo_user', JSON.stringify({ email, username, password: pass }));
+            alert("Đăng ký thành công!"); switchAuthView('login');
+        }
+        function handleLogin() {
+            const iden = document.getElementById('login-identifier').value;
+            const pass = document.getElementById('login-password').value;
+            const savedUser = JSON.parse(localStorage.getItem('lmmmo_user'));
+            if(savedUser && (iden === savedUser.email || iden === savedUser.username) && pass === savedUser.password) {
+                toggleAuthModal(false); updateUIForLoggedInUser(savedUser.username);
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+        function updateUIForLoggedInUser(username) {
+            document.getElementById('btn-show-login').classList.add('hidden');
+            document.getElementById('user-profile').classList.remove('hidden');
+            document.getElementById('user-profile').classList.add('flex');
+            document.getElementById('display-username').innerText = username;
+            document.getElementById('balance-display').innerText = "150.000đ";
+            localStorage.setItem('is_logged_in', 'true');
+        }
+        function logout() {
+            localStorage.removeItem('is_logged_in');
+            document.getElementById('btn-show-login').classList.remove('hidden');
+            document.getElementById('user-profile').classList.add('hidden');
+            document.getElementById('user-profile').classList.remove('flex');
+            document.getElementById('balance-display').innerText = "0đ";
+        }
+        window.onload = function() {
+            if(localStorage.getItem('is_logged_in') === 'true') {
+                const savedUser = JSON.parse(localStorage.getItem('lmmmo_user'));
+                if(savedUser) updateUIForLoggedInUser(savedUser.username);
+            }
+        }
+        function generateQR() {
+            const amount = document.getElementById('amount').value;
+            const content = `NAP LMMMO ${Math.floor(1000 + Math.random() * 9000)}`;
+            document.getElementById('display-content').innerText = content;
+            document.getElementById('qr-image').src = `https://img.vietqr.io/image/MB-0346099785-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(content)}&accountName=LUONG BINH MINH`;
+            document.getElementById('deposit-form').classList.add('hidden');
+            document.getElementById('qr-section').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
