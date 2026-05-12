@@ -151,8 +151,8 @@
             <div class="bg-white rounded-b-3xl shadow-sm border border-gray-200 border-t-0 pt-24 p-10 mt-0">
                 <div class="grid grid-cols-4 border-b border-gray-100 pb-8 text-center divide-x divide-gray-100">
                     <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Số dư ví</p><p class="text-2xl font-black text-gray-800" id="profile-stat-bal">0 Đ</p></div>
-                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng nạp</p><p class="text-2xl font-black text-green-500">500,000 Đ</p></div>
-                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng tiêu</p><p class="text-2xl font-black text-blue-600">150,000 Đ</p></div>
+                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng nạp</p><p class="text-2xl font-black text-green-500">0 Đ</p></div>
+                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng tiêu</p><p class="text-2xl font-black text-blue-600">0 Đ</p></div>
                     <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Đã mua</p><p class="text-2xl font-black text-gray-800">0 ĐƠN</p></div>
                 </div>
 
@@ -161,7 +161,7 @@
                         <div class="border border-gray-200 rounded-2xl p-6 relative overflow-hidden">
                             <div class="absolute top-0 right-0 bg-green-50 text-green-600 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l border-green-100">An toàn</div>
                             <h3 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">Lợi nhuận gộp</h3>
-                            <p class="text-3xl font-black text-green-500 mb-2">+350,000 Đ</p>
+                            <p class="text-3xl font-black text-green-500 mb-2">0 Đ</p>
                             <p class="text-xs text-gray-400"><i class="fas fa-chart-line mr-1 text-green-400"></i> Dựa trên Nạp - Tiêu</p>
                         </div>
                     </div>
@@ -390,6 +390,30 @@
     </div></div></div>
 
     <script>
+        // --- CHUỖI KẾT NỐI VỚI BACKEND RENDER ---
+        const BACKEND_URL = 'https://api-lmmmo.onrender.com';
+        let balanceInterval; // Biến dùng để quét số dư tự động
+
+        // HÀM LẤY SỐ DƯ REAL-TIME TỪ BACKEND
+        async function fetchRealBalance(username) {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/get-profile/?username=${username}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
+                    
+                    // Nảy số dư trên tất cả các chỗ của giao diện
+                    document.getElementById('balance-display').innerText = formatted;
+                    document.getElementById('stat-balance').innerText = formatted;
+                    document.getElementById('profile-stat-bal').innerText = formatted;
+                    document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
+                }
+            } catch (error) {
+                console.log("Đang chờ Backend phản hồi...");
+            }
+        }
+        // ----------------------------------------
+
         // 1. Core (Toast, Loader, Tabs)
         function showToast(msg, err = false) { const t = document.getElementById('toast-notification'), i = document.getElementById('toast-icon'); document.getElementById('toast-message').innerText = msg; if(err) { t.classList.replace('border-primary-500', 'border-red-500'); i.className = 'fas fa-exclamation text-red-600'; i.parentElement.classList.replace('bg-primary-100', 'bg-red-100'); } else { t.classList.replace('border-red-500', 'border-primary-500'); i.className = 'fas fa-check text-primary-600'; i.parentElement.classList.replace('bg-red-100', 'bg-primary-100'); } t.classList.remove('translate-x-[150%]', 'opacity-0'); setTimeout(() => { t.classList.add('translate-x-[150%]', 'opacity-0'); }, 3000); }
         function switchTab(tabId) { const l = document.getElementById('global-loader'); l.classList.remove('hidden'); l.classList.add('flex'); document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn text-gray-500 hover:text-primary-600 font-bold whitespace-nowrap pb-1 border-b-2 border-transparent uppercase text-sm tracking-wide transition'); let idx = {'home-tab':0, 'tool-free-tab':1, 'resource-tab':2, 'jobs-tab':3, 'job-detail-tab':3, 'social-tab':4}[tabId]; if(idx !== undefined) { const btn = document.querySelectorAll('.nav-btn')[idx]; btn.className = tabId === 'social-tab' ? 'nav-btn text-red-600 font-bold whitespace-nowrap pb-1 border-b-2 border-red-600 uppercase text-sm tracking-wide transition' : 'nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap pb-1 uppercase text-sm tracking-wide transition'; } setTimeout(() => { document.querySelectorAll('.tab-content').forEach(t => { t.classList.add('hidden'); t.classList.remove('block'); }); document.getElementById(tabId).classList.remove('hidden'); document.getElementById(tabId).classList.add('block'); window.scrollTo(0, 0); l.classList.add('hidden'); l.classList.remove('flex'); }, 400); }
@@ -399,15 +423,136 @@
         document.addEventListener('click', function(e) { const b = document.getElementById('user-profile-btn'), d = document.getElementById('user-dropdown'); if (!b.contains(e.target) && d.classList.contains('dropdown-visible')) { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } });
         function toggleAuthModal(s) { document.getElementById('auth-modal').classList.toggle('hidden', !s); if(s) { switchAuthView('login'); document.getElementById('login-error').classList.add('hidden'); document.getElementById('reg-error').classList.add('hidden'); } }
         function switchAuthView(v) { document.getElementById('login-form').classList.toggle('hidden', v !== 'login'); document.getElementById('register-form').classList.toggle('hidden', v !== 'register'); document.getElementById('forgot-form').classList.toggle('hidden', v !== 'forgot'); if(v === 'login') document.getElementById('auth-title').innerText = "Đăng nhập"; else if(v === 'register') document.getElementById('auth-title').innerText = "Tạo tài khoản"; else if(v === 'forgot') { document.getElementById('auth-title').innerText = "Khôi phục mật khẩu"; document.getElementById('forgot-step-1').classList.remove('hidden'); document.getElementById('forgot-step-2').classList.add('hidden'); } }
-        function handleRegister() { const e = document.getElementById('reg-email').value, u = document.getElementById('reg-username').value, p = document.getElementById('reg-password').value, c = document.getElementById('reg-confirm').value, box = document.getElementById('reg-error'); if(!e || !u || !p) { box.innerText = "Điền đủ thông tin!"; box.classList.remove('hidden'); return; } if(p !== c) { box.innerText = "Mật khẩu không khớp!"; box.classList.remove('hidden'); return; } if(p.length < 6) { box.innerText = "Mật khẩu > 6 ký tự!"; box.classList.remove('hidden'); return; } localStorage.setItem('lmmmo_user', JSON.stringify({ email: e, username: u, password: p })); box.classList.add('hidden'); showToast("Đăng ký thành công!"); switchAuthView('login'); }
-        function handleLogin() { const id = document.getElementById('login-identifier').value, p = document.getElementById('login-password').value, u = JSON.parse(localStorage.getItem('lmmmo_user')); if(u && (id === u.email || id === u.username) && p === u.password) { document.getElementById('login-error').classList.add('hidden'); toggleAuthModal(false); updateUIForLoggedInUser(u.username, u.email); showToast(`Chào mừng ${u.username}!`); } else { document.getElementById('login-error').innerText = "Sai thông tin đăng nhập!"; document.getElementById('login-error').classList.remove('hidden'); } }
-        
+        // --- HÀM ĐĂNG KÝ (NỐI THẲNG VÀO RENDER) ---
+        async function handleRegister() {
+            const e = document.getElementById('reg-email').value;
+            const u = document.getElementById('reg-username').value;
+            const p = document.getElementById('reg-password').value;
+            const c = document.getElementById('reg-confirm').value;
+            const box = document.getElementById('reg-error');
+
+            if(!e || !u || !p) { box.innerText = "Điền đủ thông tin!"; box.classList.remove('hidden'); return; }
+            if(p !== c) { box.innerText = "Mật khẩu không khớp!"; box.classList.remove('hidden'); return; }
+            if(p.length < 6) { box.innerText = "Mật khẩu > 6 ký tự!"; box.classList.remove('hidden'); return; }
+
+            box.classList.add('hidden');
+            const btn = document.querySelector('#register-form button');
+            btn.innerText = "Đang xử lý...";
+
+            try {
+                // Gọi điện sang nhà máy Render để tạo tài khoản thật
+                const response = await fetch(`${BACKEND_URL}/api/register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: e, username: u, password: p })
+                });
+
+                const data = await response.json();
+
+                if(response.ok) {
+                    showToast("Đăng ký thành công!");
+                    switchAuthView('login');
+                } else {
+                    box.innerText = data.error || "Tên đăng nhập hoặc Email đã tồn tại!";
+                    box.classList.remove('hidden');
+                }
+            } catch (error) {
+                box.innerText = "Lỗi kết nối đến máy chủ!";
+                box.classList.remove('hidden');
+            } finally {
+                btn.innerText = "Đăng ký";
+            }
+        }
+
+        // --- HÀM ĐĂNG NHẬP (KIỂM TRA TỪ RENDER) ---
+        async function handleLogin() {
+            const id = document.getElementById('login-identifier').value;
+            const p = document.getElementById('login-password').value;
+            const box = document.getElementById('login-error');
+
+            if(!id || !p) { box.innerText = "Điền đủ thông tin!"; box.classList.remove('hidden'); return; }
+
+            const btn = document.querySelector('#login-form button');
+            btn.innerText = "Đang kiểm tra...";
+
+            try {
+                // Đem tài khoản/mật khẩu sang két sắt Render để đối chiếu
+                const response = await fetch(`${BACKEND_URL}/api/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: id, password: p })
+                });
+
+                const data = await response.json();
+
+                if(response.ok) {
+                    box.classList.add('hidden');
+                    toggleAuthModal(false);
+
+                    // Đăng nhập thành công, lưu thẻ thông hành vào trình duyệt
+                    localStorage.setItem('lmmmo_user', JSON.stringify({ 
+                        username: data.username, 
+                        email: data.email 
+                    }));
+
+                    updateUIForLoggedInUser(data.username, data.email);
+                    showToast(`Chào mừng ${data.username}!`);
+                } else {
+                    box.innerText = "Sai tài khoản hoặc mật khẩu!";
+                    box.classList.remove('hidden');
+                }
+            } catch (error) {
+                box.innerText = "Lỗi kết nối máy chủ!";
+                box.classList.remove('hidden');
+            } finally {
+                btn.innerText = "Đăng nhập ngay";
+            }
+        }      
+
         let resetEmail = "";
         function sendForgotCode() { const e = document.getElementById('forgot-email').value, u = JSON.parse(localStorage.getItem('lmmmo_user')), box = document.getElementById('forgot-error-1'); if(!e) { box.innerText = "Nhập Email!"; box.classList.remove('hidden'); return; } if(!u || u.email !== e) { box.innerText = "Email không tồn tại!"; box.classList.remove('hidden'); return; } resetEmail = e; box.classList.add('hidden'); document.getElementById('forgot-step-1').classList.add('hidden'); document.getElementById('forgot-step-2').classList.remove('hidden'); }
         function resetPassword() { const c = document.getElementById('forgot-code').value, p = document.getElementById('forgot-new-pass').value, box = document.getElementById('forgot-error-2'); if(c.length !== 6) { box.innerText = "Mã gồm 6 số!"; box.classList.remove('hidden'); return; } if(p.length < 6) { box.innerText = "Mật khẩu > 6 ký tự!"; box.classList.remove('hidden'); return; } const u = JSON.parse(localStorage.getItem('lmmmo_user')); u.password = p; localStorage.setItem('lmmmo_user', JSON.stringify(u)); showToast("Đổi mật khẩu thành công!"); switchAuthView('login'); }
 
-        function updateUIForLoggedInUser(u, e) { document.getElementById('btn-show-login').classList.add('hidden'); document.getElementById('user-profile-btn').classList.remove('hidden'); document.getElementById('user-profile-btn').classList.add('block'); document.getElementById('display-username').innerText = u; document.getElementById('avatar-letter').innerText = u.charAt(0); document.getElementById('balance-display').innerText = "150.000 đ"; document.getElementById('stat-balance').innerText = "150.000 đ"; document.getElementById('stat-total-deposit').innerText = "500.000 đ"; document.getElementById('stat-rank').innerText = "THÀNH VIÊN VIP"; document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG ĐÃ TRỞ LẠI,"; document.getElementById('welcome-name').innerText = u; document.getElementById('banner-login-btn').classList.add('hidden'); document.getElementById('profile-name').innerText = u; document.getElementById('profile-email').innerText = e || "Chưa có"; document.getElementById('profile-avatar-letter').innerText = u.charAt(0); document.getElementById('profile-stat-bal').innerText = "150,000 Đ"; localStorage.setItem('is_logged_in', 'true'); }
-        function logout() { localStorage.removeItem('is_logged_in'); document.getElementById('btn-show-login').classList.remove('hidden'); document.getElementById('user-profile-btn').classList.add('hidden'); document.getElementById('user-profile-btn').classList.remove('block'); document.getElementById('balance-display').innerText = "0 đ"; document.getElementById('stat-balance').innerText = "0 đ"; document.getElementById('deposit-page-balance').innerText = "0"; document.getElementById('stat-total-deposit').innerText = "0 đ"; document.getElementById('stat-rank').innerText = "KHÁCH"; document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG TRỞ LẠI,"; document.getElementById('welcome-name').innerText = "KHÁCH"; document.getElementById('banner-login-btn').classList.remove('hidden'); switchTab('home-tab'); showToast("Đã đăng xuất!"); }
+        function updateUIForLoggedInUser(u, e) { 
+            document.getElementById('btn-show-login').classList.add('hidden'); 
+            document.getElementById('user-profile-btn').classList.remove('hidden'); 
+            document.getElementById('user-profile-btn').classList.add('block'); 
+            document.getElementById('display-username').innerText = u; 
+            document.getElementById('avatar-letter').innerText = u.charAt(0); 
+            document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG ĐÃ TRỞ LẠI,"; 
+            document.getElementById('welcome-name').innerText = u; 
+            document.getElementById('banner-login-btn').classList.add('hidden'); 
+            document.getElementById('profile-name').innerText = u; 
+            document.getElementById('profile-email').innerText = e || "Chưa có"; 
+            document.getElementById('profile-avatar-letter').innerText = u.charAt(0); 
+            localStorage.setItem('is_logged_in', 'true'); 
+
+            // GỌI HÀM LẤY SỐ DƯ TỪ RENDER
+            fetchRealBalance(u);
+            
+            // Lên lịch quét số dư tự động 5 giây/lần
+            if(balanceInterval) clearInterval(balanceInterval);
+            balanceInterval = setInterval(() => fetchRealBalance(u), 5000);
+        }
+        
+        function logout() { 
+            localStorage.removeItem('is_logged_in'); 
+            document.getElementById('btn-show-login').classList.remove('hidden'); 
+            document.getElementById('user-profile-btn').classList.add('hidden'); 
+            document.getElementById('user-profile-btn').classList.remove('block'); 
+            document.getElementById('balance-display').innerText = "0 đ"; 
+            document.getElementById('stat-balance').innerText = "0 đ"; 
+            document.getElementById('deposit-page-balance').innerText = "0"; 
+            document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG TRỞ LẠI,"; 
+            document.getElementById('welcome-name').innerText = "KHÁCH"; 
+            document.getElementById('banner-login-btn').classList.remove('hidden'); 
+            switchTab('home-tab'); 
+            showToast("Đã đăng xuất!"); 
+            
+            // Tắt vòng lặp quét số dư khi đăng xuất
+            if(balanceInterval) clearInterval(balanceInterval);
+        }
+        
         window.onload = function() { if(localStorage.getItem('is_logged_in') === 'true') { const u = JSON.parse(localStorage.getItem('lmmmo_user')); if(u) updateUIForLoggedInUser(u.username, u.email); checkPinStatus(); } }
 
         // 3. Security (Password, Email, PIN)
@@ -428,7 +573,25 @@
         function updateSummaryDisplay(v) { if(!v) { document.getElementById('summary-amount').innerText = "0 đ"; document.getElementById('summary-total').innerText = "0 đ"; return; } const f = formatVND(v) + " đ"; document.getElementById('summary-amount').innerText = f; document.getElementById('summary-total').innerText = f; }
         function handleInputAmount(i) { document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); updateSummaryDisplay(i.value); }
         function setAmount(a, btn) { document.getElementById('custom-amount').value = a; document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); btn.classList.remove('border-gray-200', 'text-gray-600', 'bg-white'); btn.classList.add('border-primary-500', 'text-primary-600', 'bg-primary-50'); updateSummaryDisplay(a); }
-        function processDeposit() { const a = document.getElementById('custom-amount').value; if(!a || a < 10000) { showToast("Tối thiểu 10.000 VNĐ!", true); return; } const c = `LMMMO ${Math.floor(10000 + Math.random() * 90000)}`; document.getElementById('qr-content-text').innerText = c; document.getElementById('qr-amount-text').innerText = formatVND(a) + " VNĐ"; document.getElementById('qr-image-display').src = `https://img.vietqr.io/image/MB-0346099785-compact2.png?amount=${a}&addInfo=${encodeURIComponent(c)}&accountName=LUONG BINH MINH`; document.getElementById('deposit-summary-view').classList.add('hidden'); document.getElementById('deposit-qr-view').classList.remove('hidden'); document.getElementById('deposit-qr-view').classList.add('flex'); document.getElementById('deposit-input-area').classList.add('opacity-50', 'pointer-events-none'); document.getElementById('deposit-method-area').classList.add('opacity-50', 'pointer-events-none'); showToast("Đã tạo lệnh!"); }
+        function processDeposit() { 
+            const a = document.getElementById('custom-amount').value; 
+            if(!a || a < 10000) { showToast("Tối thiểu 10.000 VNĐ!", true); return; } 
+            
+            // TỰ ĐỘNG GÁN TÊN USER VÀO NỘI DUNG CHUYỂN KHOẢN
+            const u = JSON.parse(localStorage.getItem('lmmmo_user'));
+            const usernameForQR = u ? u.username.toUpperCase() : "KHACH";
+            const c = `NAP LMMMO ${usernameForQR}`; 
+            
+            document.getElementById('qr-content-text').innerText = c; 
+            document.getElementById('qr-amount-text').innerText = formatVND(a) + " VNĐ"; 
+            document.getElementById('qr-image-display').src = `https://img.vietqr.io/image/MB-0346099785-compact2.png?amount=${a}&addInfo=${encodeURIComponent(c)}&accountName=LUONG BINH MINH`; 
+            document.getElementById('deposit-summary-view').classList.add('hidden'); 
+            document.getElementById('deposit-qr-view').classList.remove('hidden'); 
+            document.getElementById('deposit-qr-view').classList.add('flex'); 
+            document.getElementById('deposit-input-area').classList.add('opacity-50', 'pointer-events-none'); 
+            document.getElementById('deposit-method-area').classList.add('opacity-50', 'pointer-events-none'); 
+            showToast("Đã tạo lệnh nạp tự động!"); 
+        }
         function backToDepositForm() { document.getElementById('deposit-qr-view').classList.remove('flex'); document.getElementById('deposit-qr-view').classList.add('hidden'); document.getElementById('deposit-summary-view').classList.remove('hidden'); document.getElementById('deposit-input-area').classList.remove('opacity-50', 'pointer-events-none'); document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); showToast("Đã hủy mã nạp hiện tại!", true); }
 
         // 6. Đăng Bài (Ảnh, Script)
