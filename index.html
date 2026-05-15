@@ -18,6 +18,8 @@
         #user-dropdown { transform-origin: top right; transition: all 0.2s ease-out; }
         .dropdown-hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
         .dropdown-visible { opacity: 1; transform: scale(1); pointer-events: auto; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-[#f8f9fa] text-gray-800 font-sans">
@@ -352,11 +354,42 @@
 
     <div id="order-detail-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[120] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transform">
-            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="font-bold text-gray-800 uppercase" id="order-detail-title">Chi Tiết Mặt Hàng</h3><button onclick="closeOrderDetailModal()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div>
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-green-50"><h3 class="font-black text-green-700 uppercase" id="order-detail-title">Chi Tiết Mặt Hàng</h3><button onclick="closeOrderDetailModal()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div>
             <div class="p-6">
                 <h4 class="text-lg font-black text-gray-800 mb-4" id="order-item-name">Tên mặt hàng</h4>
                 <div id="order-type-tool" class="hidden"><p class="text-sm text-gray-500 mb-2">Link tải phần mềm của bạn:</p><div class="bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-center justify-between"><span class="text-blue-700 font-bold text-sm truncate pr-4" id="tool-link-display">https://...</span><button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-xs shadow-md hover:bg-blue-700 whitespace-nowrap"><i class="fas fa-download mr-1"></i> Tải về</button></div></div>
                 <div id="order-type-resource" class="hidden"><p class="text-sm text-gray-500 mb-2">Dữ liệu tài khoản đã mua:</p><textarea id="resource-data-display" rows="6" class="w-full bg-gray-900 text-green-400 font-mono text-xs p-4 rounded-xl outline-none border border-gray-700 shadow-inner" readonly></textarea><div class="mt-3 flex justify-end"><button class="text-gray-500 hover:text-gray-800 font-bold text-sm bg-gray-100 px-4 py-2 rounded-lg transition"><i class="fas fa-copy mr-1"></i> Copy tất cả</button></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tool-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h3 class="font-black text-gray-800 text-xl" id="detail-modal-title">Chi tiết Tool</h3>
+                <button onclick="closeToolDetailModal()" class="text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+                <div class="mb-2">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider"><i class="fas fa-info-circle text-primary-500 mr-1"></i> Mô tả đầy đủ</span>
+                </div>
+                <div id="detail-modal-desc" class="text-gray-700 leading-relaxed whitespace-pre-line text-[15px]"></div>
+            </div>
+            <div class="p-6 border-t border-gray-100 bg-white flex justify-between items-center">
+                <div class="font-black text-primary-600 text-2xl" id="detail-modal-price">0 đ</div>
+                <button id="detail-modal-buy-btn" class="bg-primary-600 text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-primary-700 transition flex items-center gap-2"><i class="fas fa-shopping-cart"></i> Mua ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-purchase-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative transform transition-all text-center p-8">
+            <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-shopping-cart"></i></div>
+            <h3 class="text-xl font-black text-gray-800 mb-2">Xác nhận thanh toán</h3>
+            <p class="text-gray-500 text-sm mb-6">Bạn có chắc chắn muốn mua <strong id="confirm-tool-name" class="text-gray-800 block mt-1 text-lg"></strong> với giá <strong id="confirm-tool-price" class="text-primary-600 block mt-1 text-xl"></strong>?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Hủy bỏ</button>
+                <button onclick="executePurchase()" id="btn-execute-purchase" class="flex-1 bg-primary-600 text-white font-bold py-3 rounded-xl hover:bg-primary-700 shadow-md shadow-primary-200 transition">Xác nhận mua</button>
             </div>
         </div>
     </div>
@@ -393,6 +426,14 @@
         // --- CHUỖI KẾT NỐI VỚI BACKEND RENDER ---
         const BACKEND_URL = 'https://api-lmmmo.onrender.com';
         let balanceInterval; // Biến dùng để quét số dư tự động
+
+        // THUẬT TOÁN TỰ ĐỘNG BIẾN CHỮ THÀNH LINK CLICK ĐƯỢC
+        function linkify(text) {
+            var urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+                return '<a href="' + url + '" target="_blank" class="text-blue-600 font-bold hover:underline">' + url + '</a>';
+            });
+        }
 
         // HÀM LẤY SỐ DƯ REAL-TIME TỪ BACKEND
         async function fetchRealBalance(username) {
@@ -522,17 +563,12 @@
             } catch(e) { console.log(e); }
         }
         
-        // HÀM MỞ BẢNG XỊN SẾP VỪA YÊU CẦU:
         function viewOrderDetails(t, n, d) { 
-            if(document.getElementById('order-detail-title').innerText !== "GIAO DỊCH THÀNH CÔNG") {
-                document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
-            }
             document.getElementById('order-item-name').innerText = n; 
             if (t === 'tool') {
                 document.getElementById('order-type-tool').classList.remove('hidden'); 
                 document.getElementById('order-type-resource').classList.add('hidden'); 
                 document.getElementById('tool-link-display').innerText = d; 
-                // Nút "Tải Về" mở link sang tab mới
                 document.querySelector('#order-type-tool button').onclick = function() { window.open(d, '_blank'); };
             } else {
                 document.getElementById('order-type-tool').classList.add('hidden'); 
@@ -541,8 +577,11 @@
             }
             document.getElementById('order-detail-modal').classList.remove('hidden'); 
         }
-        
-        function closeOrderDetailModal() { document.getElementById('order-detail-modal').classList.add('hidden'); }
+        function closeOrderDetailModal() { 
+            document.getElementById('order-detail-modal').classList.add('hidden'); 
+            // Reset tiêu đề về mặc định
+            document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
+        }
 
         // 5. Nạp Tiền
         function formatVND(n) { return new Intl.NumberFormat('vi-VN').format(n); }
@@ -666,6 +705,8 @@
         function openChat(u) { document.getElementById('chat-list-name').innerText = u; document.getElementById('chat-header-name').innerText = u; document.getElementById('chat-empty-area').classList.add('hidden'); document.getElementById('chat-active-area').classList.remove('hidden'); switchTab('chat-tab'); }
 
         // 8. CHỢ TÀI NGUYÊN (MUA BÁN TOOL)
+        let currentPurchase = null; // Biến lưu tạm dữ liệu món hàng đang định mua
+
         async function loadPaidTools() {
             try {
                 let res = await fetch(`${BACKEND_URL}/paid-tools/`);
@@ -674,12 +715,17 @@
                 if (data.tools && data.tools.length > 0) {
                     let html = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
                     data.tools.forEach(t => {
+                        // Mã hóa phần mô tả để tránh bị lỗi nháy kép (quotes)
+                        let safeDesc = encodeURIComponent(t.description || '');
+
                         html += `
-                        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col">
+                        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', ${t.price}, '${safeDesc}')">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">${t.name}</h3>
                             <p class="text-xs text-gray-500 mb-4 font-bold"><i class="fas fa-shopping-cart text-primary-500"></i> Đã bán: ${t.sold_count}</p>
-                            <p class="text-gray-600 text-sm mb-6 leading-relaxed flex-1">${t.description}</p>
-                            <button onclick="buyTool(${t.id}, '${t.name}', ${t.price})" class="w-full bg-primary-600 text-white py-3 rounded-xl font-bold hover:bg-primary-700 transition shadow-md flex justify-between px-4">
+                            
+                            <p class="text-gray-600 text-sm mb-6 leading-relaxed flex-1 line-clamp-3">${t.description}</p>
+                            
+                            <button onclick="event.stopPropagation(); buyTool(${t.id}, '${t.name}', ${t.price})" class="w-full bg-primary-600 text-white py-3 rounded-xl font-bold hover:bg-primary-700 transition shadow-md flex justify-between px-4">
                                 <span>Mua ngay</span><span>${new Intl.NumberFormat('vi-VN').format(t.price)} đ</span>
                             </button>
                         </div>`;
@@ -690,20 +736,66 @@
             } catch (e) { console.log("Lỗi tải Chợ Tool", e); }
         }
 
-        // HÀM MUA TOOL XỊN XÒ BỎ ALERT
-        async function buyTool(toolId, toolName, price) {
+        // --- HÀM MỞ BẢNG XEM CHI TIẾT TOOL (CÓ LINK CLICK ĐƯỢC) ---
+        function openToolDetail(id, name, price, safeDesc) {
+            let desc = decodeURIComponent(safeDesc);
+            document.getElementById('detail-modal-title').innerText = name;
+            
+            // Biến chữ có chứa "http" thành đường link xanh nước biển
+            document.getElementById('detail-modal-desc').innerHTML = linkify(desc);
+            
+            document.getElementById('detail-modal-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " đ";
+            
+            // Cài đặt sự kiện cho nút "Mua ngay" bên trong bảng Chi Tiết
+            document.getElementById('detail-modal-buy-btn').onclick = function() {
+                closeToolDetailModal();
+                buyTool(id, name, price);
+            };
+            document.getElementById('tool-detail-modal').classList.remove('hidden');
+        }
+
+        function closeToolDetailModal() {
+            document.getElementById('tool-detail-modal').classList.add('hidden');
+        }
+
+        // --- HÀM MỞ BẢNG XÁC NHẬN MUA (THAY THẾ CONFIRM PHÈN) ---
+        function buyTool(toolId, toolName, price) {
             if (localStorage.getItem('is_logged_in') !== 'true') { 
                 showToast("Bạn cần đăng nhập để mua hàng!", true); 
                 return; 
             }
-            if (!confirm(`Xác nhận mua [${toolName}] với giá ${new Intl.NumberFormat('vi-VN').format(price)} VNĐ?`)) return;
+            // Lưu tạm món hàng vào bộ nhớ
+            currentPurchase = { id: toolId, name: toolName, price: price };
+            
+            // Đổ dữ liệu ra bảng Xác Nhận
+            document.getElementById('confirm-tool-name').innerText = toolName;
+            document.getElementById('confirm-tool-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " VNĐ";
+            document.getElementById('confirm-purchase-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-purchase-modal').classList.add('hidden');
+            currentPurchase = null; // Hủy lưu tạm
+        }
+
+        // --- HÀM TIẾN HÀNH TRỪ TIỀN (SAU KHI BẤM NÚT XÁC NHẬN MUA) ---
+        async function executePurchase() {
+            if (!currentPurchase) return;
             
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
+            const btn = document.getElementById('btn-execute-purchase');
+            btn.innerText = "Đang xử lý...";
+            btn.disabled = true;
+
             try {
                 let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: toolId })
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: currentPurchase.id })
                 });
                 let data = await res.json();
+                
+                // Đóng bảng xác nhận lại
+                closeConfirmModal();
+
                 if (res.ok) {
                     showToast("Thanh toán thành công!");
                     let balanceEl = document.getElementById('balance-display');
@@ -712,28 +804,32 @@
                     loadPaidTools();
                     getOrderHistory(); 
                     
+                    // Mở bảng Chi Tiết Mặt Hàng xịn xò để báo link
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
-                    viewOrderDetails('tool', toolName, data.download_link);
+                    viewOrderDetails('tool', currentPurchase.name, data.download_link);
                 } else { showToast("Lỗi: " + data.error, true); }
-            } catch (e) { showToast("Lỗi kết nối đến máy chủ Két sắt!", true); }
+            } catch (e) { 
+                closeConfirmModal();
+                showToast("Lỗi kết nối đến máy chủ Két sắt!", true); 
+            } finally {
+                btn.innerText = "Xác nhận mua";
+                btn.disabled = false;
+            }
         }
 
         // ==========================================
         // CÚ CHỐT: TỰ ĐỘNG CHẠY KHI MỞ WEB
         // ==========================================
         window.onload = function() { 
-            // 1. Kiểm tra đăng nhập
             if(localStorage.getItem('is_logged_in') === 'true') { 
                 const u = JSON.parse(localStorage.getItem('lmmmo_user')); 
                 if(u) updateUIForLoggedInUser(u.username, u.email); 
                 checkPinStatus(); 
                 getOrderHistory();
             } 
-
-            // 2. Kéo dữ liệu từ Backend ra hiển thị
             loadCommunityPosts();
             loadJobs();
-            loadPaidTools(); // BẬT CÔNG TẮC ĐỂ TRƯNG BÀY TOOL
+            loadPaidTools(); 
         }
     </script>
 </body>
