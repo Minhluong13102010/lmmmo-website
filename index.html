@@ -521,7 +521,27 @@
                 }
             } catch(e) { console.log(e); }
         }
-        function viewOrderDetails(t, n, d) { document.getElementById('order-item-name').innerText = n; document.getElementById('order-type-tool').classList.remove('hidden'); document.getElementById('order-type-resource').classList.add('hidden'); document.getElementById('tool-link-display').innerText = d; document.getElementById('order-detail-modal').classList.remove('hidden'); }
+        
+        // HÀM MỞ BẢNG XỊN SẾP VỪA YÊU CẦU:
+        function viewOrderDetails(t, n, d) { 
+            if(document.getElementById('order-detail-title').innerText !== "GIAO DỊCH THÀNH CÔNG") {
+                document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
+            }
+            document.getElementById('order-item-name').innerText = n; 
+            if (t === 'tool') {
+                document.getElementById('order-type-tool').classList.remove('hidden'); 
+                document.getElementById('order-type-resource').classList.add('hidden'); 
+                document.getElementById('tool-link-display').innerText = d; 
+                // Nút "Tải Về" mở link sang tab mới
+                document.querySelector('#order-type-tool button').onclick = function() { window.open(d, '_blank'); };
+            } else {
+                document.getElementById('order-type-tool').classList.add('hidden'); 
+                document.getElementById('order-type-resource').classList.remove('hidden'); 
+                document.getElementById('resource-data-display').value = d;
+            }
+            document.getElementById('order-detail-modal').classList.remove('hidden'); 
+        }
+        
         function closeOrderDetailModal() { document.getElementById('order-detail-modal').classList.add('hidden'); }
 
         // 5. Nạp Tiền
@@ -670,9 +690,14 @@
             } catch (e) { console.log("Lỗi tải Chợ Tool", e); }
         }
 
+        // HÀM MUA TOOL XỊN XÒ BỎ ALERT
         async function buyTool(toolId, toolName, price) {
-            if (localStorage.getItem('is_logged_in') !== 'true') { alert("Bạn cần đăng nhập để mua hàng!"); return; }
+            if (localStorage.getItem('is_logged_in') !== 'true') { 
+                showToast("Bạn cần đăng nhập để mua hàng!", true); 
+                return; 
+            }
             if (!confirm(`Xác nhận mua [${toolName}] với giá ${new Intl.NumberFormat('vi-VN').format(price)} VNĐ?`)) return;
+            
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             try {
                 let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
@@ -680,13 +705,17 @@
                 });
                 let data = await res.json();
                 if (res.ok) {
-                    alert("MUA THÀNH CÔNG! Link tải của Sếp đây: \n\n" + data.download_link);
+                    showToast("Thanh toán thành công!");
                     let balanceEl = document.getElementById('balance-display');
                     if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
+                    
                     loadPaidTools();
-                    getOrderHistory(); // Load lại lịch sử luôn
-                } else { alert("Lỗi: " + data.error); }
-            } catch (e) { alert("Lỗi kết nối đến máy chủ Két sắt!"); }
+                    getOrderHistory(); 
+                    
+                    document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
+                    viewOrderDetails('tool', toolName, data.download_link);
+                } else { showToast("Lỗi: " + data.error, true); }
+            } catch (e) { showToast("Lỗi kết nối đến máy chủ Két sắt!", true); }
         }
 
         // ==========================================
@@ -704,7 +733,7 @@
             // 2. Kéo dữ liệu từ Backend ra hiển thị
             loadCommunityPosts();
             loadJobs();
-            loadPaidTools(); // ĐÃ BẬT CÔNG TẮC ĐỂ TRƯNG BÀY TOOL
+            loadPaidTools(); // BẬT CÔNG TẮC ĐỂ TRƯNG BÀY TOOL
         }
     </script>
 </body>
