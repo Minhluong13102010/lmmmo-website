@@ -397,22 +397,18 @@
         // HÀM LẤY SỐ DƯ REAL-TIME TỪ BACKEND
         async function fetchRealBalance(username) {
             try {
-                const response = await fetch(`${BACKEND_URL}/api/get-profile/?username=${username}`);
+                const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`);
                 if (response.ok) {
                     const data = await response.json();
                     const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
                     
-                    // Nảy số dư trên tất cả các chỗ của giao diện
                     document.getElementById('balance-display').innerText = formatted;
                     document.getElementById('stat-balance').innerText = formatted;
                     document.getElementById('profile-stat-bal').innerText = formatted;
                     document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
                 }
-            } catch (error) {
-                console.log("Đang chờ Backend phản hồi...");
-            }
+            } catch (error) { console.log("Đang chờ Backend phản hồi..."); }
         }
-        // ----------------------------------------
 
         // 1. Core (Toast, Loader, Tabs)
         function showToast(msg, err = false) { const t = document.getElementById('toast-notification'), i = document.getElementById('toast-icon'); document.getElementById('toast-message').innerText = msg; if(err) { t.classList.replace('border-primary-500', 'border-red-500'); i.className = 'fas fa-exclamation text-red-600'; i.parentElement.classList.replace('bg-primary-100', 'bg-red-100'); } else { t.classList.replace('border-red-500', 'border-primary-500'); i.className = 'fas fa-check text-primary-600'; i.parentElement.classList.replace('bg-red-100', 'bg-primary-100'); } t.classList.remove('translate-x-[150%]', 'opacity-0'); setTimeout(() => { t.classList.add('translate-x-[150%]', 'opacity-0'); }, 3000); }
@@ -423,90 +419,38 @@
         document.addEventListener('click', function(e) { const b = document.getElementById('user-profile-btn'), d = document.getElementById('user-dropdown'); if (!b.contains(e.target) && d.classList.contains('dropdown-visible')) { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } });
         function toggleAuthModal(s) { document.getElementById('auth-modal').classList.toggle('hidden', !s); if(s) { switchAuthView('login'); document.getElementById('login-error').classList.add('hidden'); document.getElementById('reg-error').classList.add('hidden'); } }
         function switchAuthView(v) { document.getElementById('login-form').classList.toggle('hidden', v !== 'login'); document.getElementById('register-form').classList.toggle('hidden', v !== 'register'); document.getElementById('forgot-form').classList.toggle('hidden', v !== 'forgot'); if(v === 'login') document.getElementById('auth-title').innerText = "Đăng nhập"; else if(v === 'register') document.getElementById('auth-title').innerText = "Tạo tài khoản"; else if(v === 'forgot') { document.getElementById('auth-title').innerText = "Khôi phục mật khẩu"; document.getElementById('forgot-step-1').classList.remove('hidden'); document.getElementById('forgot-step-2').classList.add('hidden'); } }
-        // --- HÀM ĐĂNG KÝ (NỐI THẲNG VÀO RENDER) ---
+        
         async function handleRegister() {
-            const e = document.getElementById('reg-email').value;
-            const u = document.getElementById('reg-username').value;
-            const p = document.getElementById('reg-password').value;
-            const c = document.getElementById('reg-confirm').value;
-            const box = document.getElementById('reg-error');
-
+            const e = document.getElementById('reg-email').value, u = document.getElementById('reg-username').value, p = document.getElementById('reg-password').value, c = document.getElementById('reg-confirm').value, box = document.getElementById('reg-error');
             if(!e || !u || !p) { box.innerText = "Điền đủ thông tin!"; box.classList.remove('hidden'); return; }
             if(p !== c) { box.innerText = "Mật khẩu không khớp!"; box.classList.remove('hidden'); return; }
             if(p.length < 6) { box.innerText = "Mật khẩu > 6 ký tự!"; box.classList.remove('hidden'); return; }
-
-            box.classList.add('hidden');
-            const btn = document.querySelector('#register-form button');
-            btn.innerText = "Đang xử lý...";
-
+            box.classList.add('hidden'); const btn = document.querySelector('#register-form button'); btn.innerText = "Đang xử lý...";
             try {
-                // Gọi điện sang nhà máy Render để tạo tài khoản thật
-                const response = await fetch(`${BACKEND_URL}/api/register/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: e, username: u, password: p })
+                const response = await fetch(`${BACKEND_URL}/register/`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: e, username: u, password: p })
                 });
-
                 const data = await response.json();
-
-                if(response.ok) {
-                    showToast("Đăng ký thành công!");
-                    switchAuthView('login');
-                } else {
-                    box.innerText = data.error || "Tên đăng nhập hoặc Email đã tồn tại!";
-                    box.classList.remove('hidden');
-                }
-            } catch (error) {
-                box.innerText = "Lỗi kết nối đến máy chủ!";
-                box.classList.remove('hidden');
-            } finally {
-                btn.innerText = "Đăng ký";
-            }
+                if(response.ok) { showToast("Đăng ký thành công!"); switchAuthView('login'); } 
+                else { box.innerText = data.error || "Tên đăng nhập hoặc Email đã tồn tại!"; box.classList.remove('hidden'); }
+            } catch (error) { box.innerText = "Lỗi kết nối đến máy chủ!"; box.classList.remove('hidden'); } finally { btn.innerText = "Đăng ký"; }
         }
 
-        // --- HÀM ĐĂNG NHẬP (KIỂM TRA TỪ RENDER) ---
         async function handleLogin() {
-            const id = document.getElementById('login-identifier').value;
-            const p = document.getElementById('login-password').value;
-            const box = document.getElementById('login-error');
-
+            const id = document.getElementById('login-identifier').value, p = document.getElementById('login-password').value, box = document.getElementById('login-error');
             if(!id || !p) { box.innerText = "Điền đủ thông tin!"; box.classList.remove('hidden'); return; }
-
-            const btn = document.querySelector('#login-form button');
-            btn.innerText = "Đang kiểm tra...";
-
+            const btn = document.querySelector('#login-form button'); btn.innerText = "Đang kiểm tra...";
             try {
-                // Đem tài khoản/mật khẩu sang két sắt Render để đối chiếu
-                const response = await fetch(`${BACKEND_URL}/api/login/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: id, password: p })
+                const response = await fetch(`${BACKEND_URL}/login/`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: id, password: p })
                 });
-
                 const data = await response.json();
-
                 if(response.ok) {
-                    box.classList.add('hidden');
-                    toggleAuthModal(false);
-
-                    // Đăng nhập thành công, lưu thẻ thông hành vào trình duyệt
-                    localStorage.setItem('lmmmo_user', JSON.stringify({ 
-                        username: data.username, 
-                        email: data.email 
-                    }));
-
-                    updateUIForLoggedInUser(data.username, data.email);
-                    showToast(`Chào mừng ${data.username}!`);
-                } else {
-                    box.innerText = "Sai tài khoản hoặc mật khẩu!";
-                    box.classList.remove('hidden');
-                }
-            } catch (error) {
-                box.innerText = "Lỗi kết nối máy chủ!";
-                box.classList.remove('hidden');
-            } finally {
-                btn.innerText = "Đăng nhập ngay";
-            }
+                    box.classList.add('hidden'); toggleAuthModal(false);
+                    localStorage.setItem('lmmmo_user', JSON.stringify({ username: data.username, email: data.email }));
+                    updateUIForLoggedInUser(data.username, data.email); showToast(`Chào mừng ${data.username}!`);
+                } else { box.innerText = "Sai tài khoản hoặc mật khẩu!"; box.classList.remove('hidden'); }
+            } catch (error) { box.innerText = "Lỗi kết nối máy chủ!"; box.classList.remove('hidden'); } finally { btn.innerText = "Đăng nhập ngay"; }
         }      
 
         let resetEmail = "";
@@ -526,11 +470,7 @@
             document.getElementById('profile-email').innerText = e || "Chưa có"; 
             document.getElementById('profile-avatar-letter').innerText = u.charAt(0); 
             localStorage.setItem('is_logged_in', 'true'); 
-
-            // GỌI HÀM LẤY SỐ DƯ TỪ RENDER
             fetchRealBalance(u);
-            
-            // Lên lịch quét số dư tự động 5 giây/lần
             if(balanceInterval) clearInterval(balanceInterval);
             balanceInterval = setInterval(() => fetchRealBalance(u), 5000);
         }
@@ -548,12 +488,8 @@
             document.getElementById('banner-login-btn').classList.remove('hidden'); 
             switchTab('home-tab'); 
             showToast("Đã đăng xuất!"); 
-            
-            // Tắt vòng lặp quét số dư khi đăng xuất
             if(balanceInterval) clearInterval(balanceInterval);
         }
-        
-        window.onload = function() { if(localStorage.getItem('is_logged_in') === 'true') { const u = JSON.parse(localStorage.getItem('lmmmo_user')); if(u) updateUIForLoggedInUser(u.username, u.email); checkPinStatus(); } }
 
         // 3. Security (Password, Email, PIN)
         let secAction = '';
@@ -565,7 +501,27 @@
 
         // 4. Lịch sử mua hàng
         function openHistoryModal() { document.getElementById('history-modal').classList.remove('hidden'); } function closeHistoryModal() { document.getElementById('history-modal').classList.add('hidden'); }
-        function viewOrderDetails(t, n, d) { document.getElementById('order-item-name').innerText = n; if(t === 'tool') { document.getElementById('order-type-tool').classList.remove('hidden'); document.getElementById('order-type-resource').classList.add('hidden'); document.getElementById('tool-link-display').innerText = d; } else { document.getElementById('order-type-tool').classList.add('hidden'); document.getElementById('order-type-resource').classList.remove('hidden'); document.getElementById('resource-data-display').value = d; } document.getElementById('order-detail-modal').classList.remove('hidden'); }
+        async function getOrderHistory() {
+            const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
+            try {
+                let res = await fetch(`${BACKEND_URL}/history/?username=${u}`);
+                if(res.ok) {
+                    let data = await res.json();
+                    let tbody = document.querySelector('#history-modal tbody');
+                    tbody.innerHTML = '';
+                    if(data.history && data.history.length > 0) {
+                        data.history.forEach(o => {
+                            tbody.innerHTML += `<tr>
+                                <td class="px-6 py-4 border-b border-gray-100 text-sm text-gray-500 font-medium">${o.date}</td>
+                                <td class="px-6 py-4 border-b border-gray-100 text-sm font-bold text-gray-800">${o.item_name}</td>
+                                <td class="px-6 py-4 border-b border-gray-100 text-right"><button onclick="viewOrderDetails('tool', '${o.item_name}', '${o.delivered_data}')" class="text-primary-600 bg-primary-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary-100 transition shadow-sm border border-primary-100">Xem Link/Nick</button></td>
+                            </tr>`;
+                        });
+                    } else { tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-gray-400 text-sm italic">Chưa có lịch sử mua hàng nào.</td></tr>'; }
+                }
+            } catch(e) { console.log(e); }
+        }
+        function viewOrderDetails(t, n, d) { document.getElementById('order-item-name').innerText = n; document.getElementById('order-type-tool').classList.remove('hidden'); document.getElementById('order-type-resource').classList.add('hidden'); document.getElementById('tool-link-display').innerText = d; document.getElementById('order-detail-modal').classList.remove('hidden'); }
         function closeOrderDetailModal() { document.getElementById('order-detail-modal').classList.add('hidden'); }
 
         // 5. Nạp Tiền
@@ -576,12 +532,9 @@
         function processDeposit() { 
             const a = document.getElementById('custom-amount').value; 
             if(!a || a < 10000) { showToast("Tối thiểu 10.000 VNĐ!", true); return; } 
-            
-            // TỰ ĐỘNG GÁN TÊN USER VÀO NỘI DUNG CHUYỂN KHOẢN
             const u = JSON.parse(localStorage.getItem('lmmmo_user'));
             const usernameForQR = u ? u.username.toUpperCase() : "KHACH";
             const c = `NAP LMMMO ${usernameForQR}`; 
-            
             document.getElementById('qr-content-text').innerText = c; 
             document.getElementById('qr-amount-text').innerText = formatVND(a) + " VNĐ"; 
             document.getElementById('qr-image-display').src = `https://img.vietqr.io/image/MB-0346099785-compact2.png?amount=${a}&addInfo=${encodeURIComponent(c)}&accountName=LUONG BINH MINH`; 
@@ -594,18 +547,15 @@
         }
         function backToDepositForm() { document.getElementById('deposit-qr-view').classList.remove('flex'); document.getElementById('deposit-qr-view').classList.add('hidden'); document.getElementById('deposit-summary-view').classList.remove('hidden'); document.getElementById('deposit-input-area').classList.remove('opacity-50', 'pointer-events-none'); document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); showToast("Đã hủy mã nạp hiện tại!", true); }
 
-        // ==========================================
-        // 6. CỘNG ĐỒNG - NỐI THẲNG VÀO KÉT SẮT RENDER
-        // ==========================================
+        // 6. CỘNG ĐỒNG
         let mFile = null, mType = null, mURL = null;
         function handleMediaSelect(i) { if(i.files && i.files[0]) { mFile = i.files[0]; mType = mFile.type.startsWith('video/') ? 'video' : 'image'; mURL = URL.createObjectURL(mFile); const c = document.getElementById('media-preview-content'); c.innerHTML = mType === 'video' ? `<video src="${mURL}" controls class="h-40 object-cover"></video>` : `<img src="${mURL}" class="h-40 object-cover">`; document.getElementById('media-preview-container').classList.remove('hidden'); } }
         function clearMedia() { mFile = null; mType = null; mURL = null; document.getElementById('media-upload').value = ''; document.getElementById('media-preview-container').classList.add('hidden'); }
         function toggleScriptInput() { document.getElementById('script-input-container').classList.toggle('hidden'); }
 
-        // Máy hút bài viết từ Két sắt
         async function loadCommunityPosts() {
             try {
-                let res = await fetch(`${BACKEND_URL}/api/community/`);
+                let res = await fetch(`${BACKEND_URL}/community/`);
                 let data = await res.json();
                 let feed = document.getElementById('newsfeed');
                 feed.innerHTML = ''; 
@@ -627,56 +577,38 @@
                         </div>`;
                         feed.insertAdjacentHTML('beforeend', html);
                     });
-                } else {
-                    document.getElementById('empty-feed-msg').style.display = 'block';
-                }
+                } else { document.getElementById('empty-feed-msg').style.display = 'block'; }
             } catch (e) { console.log("Lỗi tải bài viết"); }
         }
 
-        // Bắn bài viết mới vào Két sắt
         async function createPost() { 
             const txt = document.getElementById('post-input').value.trim();
             const scr = document.getElementById('script-input') ? document.getElementById('script-input').value.trim() : ''; 
-            
-            let finalContent = txt;
-            if (scr) finalContent += `\n\n[Script/Code]:\n${scr}`;
-
+            let finalContent = txt; if (scr) finalContent += `\n\n[Script/Code]:\n${scr}`;
             if(!finalContent) { showToast("Vui lòng nhập nội dung!", true); return; } 
             const u = localStorage.getItem('is_logged_in') === 'true' ? JSON.parse(localStorage.getItem('lmmmo_user')).username : "Khách"; 
-
             try {
-                let res = await fetch(`${BACKEND_URL}/api/community/`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({author: u, content: finalContent})
+                let res = await fetch(`${BACKEND_URL}/community/`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: u, content: finalContent})
                 });
-                
                 if(res.ok) {
                     document.getElementById('post-input').value = ''; 
                     if(document.getElementById('script-input')) document.getElementById('script-input').value = ''; 
                     document.getElementById('script-input-container').classList.add('hidden'); 
-                    clearMedia(); 
-                    showToast("Đăng bài thành công!"); 
-                    loadCommunityPosts(); // Đăng xong bắt nó tải lại kho ngay lập tức
+                    clearMedia(); showToast("Đăng bài thành công!"); loadCommunityPosts(); 
                 }
-            } catch(e) {
-                showToast("Lỗi máy chủ!", true);
-            }
+            } catch(e) { showToast("Lỗi máy chủ!", true); }
         }
 
-        // ==========================================
-        // 7. VIỆC LÀM - NỐI THẲNG VÀO KÉT SẮT RENDER
-        // ==========================================
+        // 7. VIỆC LÀM
         function openJobModal() { document.getElementById('job-modal').classList.remove('hidden'); } 
         function closeJobModal() { document.getElementById('job-modal').classList.add('hidden'); }
 
-        // Máy hút việc làm từ Két sắt
         async function loadJobs() {
             try {
-                let res = await fetch(`${BACKEND_URL}/api/jobs/`);
+                let res = await fetch(`${BACKEND_URL}/jobs/`);
                 let data = await res.json();
-                let list = document.getElementById('job-list');
-                list.innerHTML = '';
+                let list = document.getElementById('job-list'); list.innerHTML = '';
                 if(data.jobs && data.jobs.length > 0) {
                     document.getElementById('empty-job-msg').style.display = 'none';
                     data.jobs.forEach(j => {
@@ -694,67 +626,85 @@
                         </div>`;
                         list.insertAdjacentHTML('beforeend', html);
                     });
-                } else {
-                    document.getElementById('empty-job-msg').style.display = 'block';
-                }
+                } else { document.getElementById('empty-job-msg').style.display = 'block'; }
             } catch(e) { console.log("Lỗi tải việc làm"); }
         }
 
-        // Bắn việc làm mới vào Két sắt
         async function submitJob() { 
-            const t = document.getElementById('job-title').value; 
-            const d = document.getElementById('job-desc').value; 
-            const c = document.getElementById('job-category').value; 
-            const bt = document.getElementById('job-budget-type').value; 
-            const min = document.getElementById('job-min-price').value; 
-            const max = document.getElementById('job-max-price').value; 
-
+            const t = document.getElementById('job-title').value, d = document.getElementById('job-desc').value, c = document.getElementById('job-category').value, bt = document.getElementById('job-budget-type').value, min = document.getElementById('job-min-price').value, max = document.getElementById('job-max-price').value; 
             if(!t || !d || !c) return showToast("Nhập đủ thông tin có dấu (*)", true); 
-
-            let txt = bt + ": Thỏa thuận"; 
-            if(min && max) txt = `${bt}: ${formatVND(min)} - ${formatVND(max)} Đ`; 
-            else if(min) txt = `${bt}: Từ ${formatVND(min)} Đ`; 
-
+            let txt = bt + ": Thỏa thuận"; if(min && max) txt = `${bt}: ${formatVND(min)} - ${formatVND(max)} Đ`; else if(min) txt = `${bt}: Từ ${formatVND(min)} Đ`; 
             const a = localStorage.getItem('is_logged_in') === 'true' ? JSON.parse(localStorage.getItem('lmmmo_user')).username : "Khách"; 
-
             try {
-                let res = await fetch(`${BACKEND_URL}/api/jobs/`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({author: a, title: t, description: d, category: c, budget_info: txt})
+                let res = await fetch(`${BACKEND_URL}/jobs/`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: a, title: t, description: d, category: c, budget_info: txt})
                 });
-                
-                if(res.ok) {
-                    closeJobModal(); 
-                    showToast("Đăng tin tuyển dụng thành công!"); 
-                    document.getElementById('job-title').value = ''; 
-                    document.getElementById('job-desc').value = ''; 
-                    document.getElementById('job-min-price').value = '';
-                    document.getElementById('job-max-price').value = '';
-                    loadJobs(); // Đăng xong tải lại luôn
-                }
-            } catch(e) {
-                showToast("Lỗi máy chủ!", true);
-            }
+                if(res.ok) { closeJobModal(); showToast("Đăng tin tuyển dụng thành công!"); document.getElementById('job-title').value = ''; document.getElementById('job-desc').value = ''; document.getElementById('job-min-price').value = ''; document.getElementById('job-max-price').value = ''; loadJobs(); }
+            } catch(e) { showToast("Lỗi máy chủ!", true); }
         } 
-        
         function viewJobDetail(t, b, d, a) { document.getElementById('job-detail-title').innerText = t; document.getElementById('job-detail-budget').innerText = "Ngân sách: " + b; document.getElementById('job-detail-desc').innerText = d; document.getElementById('job-detail-author').innerText = a; switchTab('job-detail-tab'); } 
         function openChat(u) { document.getElementById('chat-list-name').innerText = u; document.getElementById('chat-header-name').innerText = u; document.getElementById('chat-empty-area').classList.add('hidden'); document.getElementById('chat-active-area').classList.remove('hidden'); switchTab('chat-tab'); }
+
+        // 8. CHỢ TÀI NGUYÊN (MUA BÁN TOOL)
+        async function loadPaidTools() {
+            try {
+                let res = await fetch(`${BACKEND_URL}/paid-tools/`);
+                let data = await res.json();
+                let shop = document.getElementById('resource-tab'); 
+                if (data.tools && data.tools.length > 0) {
+                    let html = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
+                    data.tools.forEach(t => {
+                        html += `
+                        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col">
+                            <h3 class="font-bold text-xl mb-2 text-gray-800">${t.name}</h3>
+                            <p class="text-xs text-gray-500 mb-4 font-bold"><i class="fas fa-shopping-cart text-primary-500"></i> Đã bán: ${t.sold_count}</p>
+                            <p class="text-gray-600 text-sm mb-6 leading-relaxed flex-1">${t.description}</p>
+                            <button onclick="buyTool(${t.id}, '${t.name}', ${t.price})" class="w-full bg-primary-600 text-white py-3 rounded-xl font-bold hover:bg-primary-700 transition shadow-md flex justify-between px-4">
+                                <span>Mua ngay</span><span>${new Intl.NumberFormat('vi-VN').format(t.price)} đ</span>
+                            </button>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                    shop.innerHTML = html;
+                }
+            } catch (e) { console.log("Lỗi tải Chợ Tool", e); }
+        }
+
+        async function buyTool(toolId, toolName, price) {
+            if (localStorage.getItem('is_logged_in') !== 'true') { alert("Bạn cần đăng nhập để mua hàng!"); return; }
+            if (!confirm(`Xác nhận mua [${toolName}] với giá ${new Intl.NumberFormat('vi-VN').format(price)} VNĐ?`)) return;
+            const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
+            try {
+                let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: toolId })
+                });
+                let data = await res.json();
+                if (res.ok) {
+                    alert("MUA THÀNH CÔNG! Link tải của Sếp đây: \n\n" + data.download_link);
+                    let balanceEl = document.getElementById('balance-display');
+                    if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
+                    loadPaidTools();
+                    getOrderHistory(); // Load lại lịch sử luôn
+                } else { alert("Lỗi: " + data.error); }
+            } catch (e) { alert("Lỗi kết nối đến máy chủ Két sắt!"); }
+        }
 
         // ==========================================
         // CÚ CHỐT: TỰ ĐỘNG CHẠY KHI MỞ WEB
         // ==========================================
         window.onload = function() { 
-            // 1. Kiểm tra xem ai đang đăng nhập
+            // 1. Kiểm tra đăng nhập
             if(localStorage.getItem('is_logged_in') === 'true') { 
                 const u = JSON.parse(localStorage.getItem('lmmmo_user')); 
                 if(u) updateUIForLoggedInUser(u.username, u.email); 
                 checkPinStatus(); 
+                getOrderHistory();
             } 
 
-            // 2. Tự động ra lệnh cho máy hút kéo bài viết từ Két sắt ra trưng bày
+            // 2. Kéo dữ liệu từ Backend ra hiển thị
             loadCommunityPosts();
             loadJobs();
+            loadPaidTools(); // ĐÃ BẬT CÔNG TẮC ĐỂ TRƯNG BÀY TOOL
         }
     </script>
 </body>
