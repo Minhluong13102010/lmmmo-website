@@ -572,9 +572,18 @@
         function handleSecuritySave() { const curr = document.getElementById('sec-current-pass').value, nData = document.getElementById('sec-new-input').value, isRm = document.getElementById('checkbox-remove-pin').checked, err = document.getElementById('sec-error'), u = JSON.parse(localStorage.getItem('lmmmo_user')); if(curr !== u.password) { err.innerText = "Mật khẩu hiện tại sai!"; err.classList.remove('hidden'); return; } if(secAction === 'password') { if(nData.length < 6) { err.innerText = "Mật khẩu quá ngắn!"; err.classList.remove('hidden'); return; } u.password = nData; showToast("Đã đổi mật khẩu!"); } else if (secAction === 'email') { if(!nData.includes('@')) { err.innerText = "Gmail không hợp lệ!"; err.classList.remove('hidden'); return; } u.email = nData; document.getElementById('profile-email').innerText = nData; showToast("Đã cập nhật Gmail!"); } else if (secAction === 'pin') { if(isRm) { delete u.pin; showToast("Đã xóa mã PIN!"); } else { if(!/^\d{4}$/.test(nData)) { err.innerText = "Mã PIN phải 4 số!"; err.classList.remove('hidden'); return; } u.pin = nData; showToast("Đã thiết lập mã PIN!"); } } localStorage.setItem('lmmmo_user', JSON.stringify(u)); closeSecurityModal(); checkPinStatus(); }
 
         // 4. Lịch sử mua hàng
-        function openHistoryModal() { document.getElementById('history-modal').classList.remove('hidden'); } function closeHistoryModal() { document.getElementById('history-modal').classList.add('hidden'); }
+        function openHistoryModal() { 
+            getOrderHistory(); 
+            document.getElementById('history-modal').classList.remove('hidden'); 
+        } 
+        function closeHistoryModal() { 
+            document.getElementById('history-modal').classList.add('hidden'); 
+        }
+        
         async function getOrderHistory() {
-            const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
+            const userObj = JSON.parse(localStorage.getItem('lmmmo_user'));
+            if (!userObj) return;
+            const u = userObj.username;
             try {
                 let res = await fetch(`${BACKEND_URL}/history/?username=${u}`);
                 if(res.ok) {
@@ -822,11 +831,14 @@
             document.getElementById('tool-detail-modal').classList.add('hidden');
         }
 
+        // BÍ KÍP KHÓA MỤC TIÊU: LƯU CHÍNH XÁC ID CỦA TOOL BỊ BẤM VÀO BIẾN currentPurchase
         function buyTool(toolId, toolName, price) {
             if (localStorage.getItem('is_logged_in') !== 'true') { 
                 showToast("Bạn cần đăng nhập để mua hàng!", true); 
                 return; 
             }
+            
+            // Dòng này đảm bảo 100% ID của tool đúng được gửi đi
             currentPurchase = { id: toolId, name: toolName, price: price };
             
             document.getElementById('confirm-tool-name').innerText = toolName;
@@ -836,9 +848,11 @@
 
         function closeConfirmModal() {
             document.getElementById('confirm-purchase-modal').classList.add('hidden');
+            // Xóa rác, nhưng chỉ xóa SAU KHI thuật toán Mua hàng đã copy xong dữ liệu
             currentPurchase = null;
         }
 
+        // THUẬT TOÁN ĐÃ ĐƯỢC VÁ LỖI JAVASCRIPT BẤT TỬ
         async function executePurchase() {
             if (!currentPurchase) return;
             
@@ -847,12 +861,18 @@
             btn.innerText = "Đang xử lý...";
             btn.disabled = true;
 
+            // VÁ LỖI Ở ĐÂY: Lưu lại chính xác TÊN và ID tool trước khi bảng xác nhận bị đóng
+            const savedToolName = currentPurchase.name;
+            const savedToolId = currentPurchase.id;
+
             try {
+                // Gửi ĐÚNG MÃ ID (savedToolId) lên Két sắt để Két sắt quét đúng sản phẩm
                 let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: currentPurchase.id })
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: savedToolId })
                 });
                 let data = await res.json();
                 
+                // Đóng bảng xác nhận (Lệnh closeConfirmModal này sẽ xóa biến currentPurchase về null)
                 closeConfirmModal();
 
                 if (res.ok) {
@@ -860,13 +880,15 @@
                     let balanceEl = document.getElementById('balance-display');
                     if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
                     
-                    loadPaidTools();
-                    getOrderHistory(); 
+                    loadPaidTools(); // Tải lại chợ để cập nhật số lượng "Đã bán"
+                    getOrderHistory(); // Lệnh load lịch sử ngầm ở đây đảm bảo lịch sử luôn là mới nhất
                     
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
-                    viewOrderDetails('tool', currentPurchase.name, data.download_link);
+                    // Gọi bảng trả link lên bằng tên Tool ĐÃ ĐƯỢC LƯU, vì currentPurchase lúc này đã bị xóa
+                    viewOrderDetails('tool', savedToolName, data.download_link);
                 } else { showToast("Lỗi: " + data.error, true); }
             } catch (e) { 
+                console.log("Bug JS:", e); // Báo lỗi ngầm cho dev
                 closeConfirmModal();
                 showToast("Lỗi kết nối đến máy chủ Két sắt!", true); 
             } finally {
