@@ -271,7 +271,10 @@
                             <button onclick="setAmount(1000000, this)" class="preset-btn bg-white border border-gray-200 text-gray-600 hover:border-primary-500 hover:text-primary-600 font-bold py-3.5 rounded-xl transition shadow-sm text-sm">1.000.000 đ</button>
                             <button onclick="setAmount(5000000, this)" class="preset-btn bg-white border border-gray-200 text-gray-600 hover:border-primary-500 hover:text-primary-600 font-bold py-3.5 rounded-xl transition shadow-sm text-sm">5.000.000 đ</button>
                         </div>
-                        <div class="flex justify-between items-end mb-2"><label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Hoặc nhập tùy chỉnh</label></div>
+                        <div class="flex justify-between items-end mb-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Hoặc nhập tùy chỉnh</label>
+                            <span class="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-1 rounded-md border border-red-100 shadow-sm">Tối thiểu: 20.000 VNĐ</span>
+                        </div>
                         <div class="relative flex items-center"><input type="number" id="custom-amount" oninput="handleInputAmount(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-6 py-4 text-xl font-bold text-gray-800 outline-none focus:border-primary-500 focus:bg-white transition shadow-inner" placeholder="VD: 50000"><span class="absolute right-6 text-gray-400 font-bold">VNĐ</span></div>
                     </div>
 
@@ -322,7 +325,10 @@
 
                         <div id="deposit-qr-view" class="p-8 hidden flex-col items-center bg-gray-50">
                             <button onclick="backToDepositForm()" class="self-start text-gray-500 hover:text-primary-600 font-bold mb-4 text-sm flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm transition"><i class="fas fa-arrow-left"></i> Quay lại</button>
-                            <h3 class="text-lg font-black text-primary-600 uppercase mb-4 text-center tracking-tight">Quét QR Thanh Toán</h3>
+                            <h3 class="text-lg font-black text-primary-600 uppercase mb-2 text-center tracking-tight">Quét QR Thanh Toán</h3>
+                            
+                            <p class="text-center text-red-500 font-bold mb-4 text-sm bg-red-50 py-2 rounded-lg border border-red-100 w-full shadow-sm"><i class="fas fa-clock mr-1"></i> Hết hạn sau: <span id="qr-countdown" class="text-lg tracking-wider">10:00</span></p>
+                            
                             <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 mb-6"><img id="qr-image-display" src="" class="w-56 h-56 rounded-xl"></div>
                             <div class="w-full bg-white p-5 rounded-xl border border-gray-200 text-sm space-y-3 text-left mb-6 shadow-sm">
                                 <div class="flex justify-between border-b border-gray-50 pb-2"><span class="text-gray-500">Ngân hàng:</span> <strong class="text-gray-800">MB Bank</strong></div>
@@ -337,6 +343,15 @@
             </div>
         </div>
     </main>
+
+    <div id="deposit-success-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative text-center p-8 border-t-8 border-green-500">
+            <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce"><i class="fas fa-check-circle"></i></div>
+            <h3 class="text-2xl font-black text-gray-800 mb-2 uppercase">Nạp Tiền Thành Công!</h3>
+            <p class="text-gray-500 text-sm mb-6">Hệ thống đã tự động cộng <strong id="deposit-success-amount" class="text-green-600 text-lg"></strong> vào ví của bạn.</p>
+            <button onclick="closeDepositSuccessModal()" class="w-full bg-green-500 text-white font-black py-3.5 rounded-xl hover:bg-green-600 shadow-md shadow-green-200 transition uppercase tracking-widest">Đóng & Trở về</button>
+        </div>
+    </div>
 
     <div id="history-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl relative max-h-[85vh] flex flex-col">
@@ -426,6 +441,7 @@
         // --- CHUỖI KẾT NỐI VỚI BACKEND RENDER ---
         const BACKEND_URL = 'https://api-lmmmo.onrender.com';
         let balanceInterval; // Biến dùng để quét số dư tự động
+        let currentBalance = -1; // Biến bí mật để theo dõi ví nảy số
 
         // THUẬT TOÁN TỰ ĐỘNG BIẾN CHỮ THÀNH LINK CLICK ĐƯỢC
         function linkify(text) {
@@ -435,20 +451,35 @@
             });
         }
 
-        // HÀM LẤY SỐ DƯ REAL-TIME TỪ BACKEND
+        // HÀM LẤY SỐ DƯ REAL-TIME TỪ BACKEND VÀ HIỆN BẢNG CHÚC MỪNG
         async function fetchRealBalance(username) {
             try {
                 const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`);
                 if (response.ok) {
                     const data = await response.json();
-                    const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
                     
+                    // THUẬT TOÁN SO SÁNH: Nếu tiền tự nhiên TĂNG LÊN => Bật bảng chúc mừng!
+                    if (currentBalance !== -1 && data.balance > currentBalance) {
+                        let addedAmount = data.balance - currentBalance;
+                        document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
+                        document.getElementById('deposit-success-modal').classList.remove('hidden');
+                        document.getElementById('deposit-success-modal').classList.add('flex');
+                        backToDepositForm(); // Hủy mã QR, đóng form lại
+                    }
+                    currentBalance = data.balance; // Lưu lại số dư hiện tại
+
+                    const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
                     document.getElementById('balance-display').innerText = formatted;
                     document.getElementById('stat-balance').innerText = formatted;
                     document.getElementById('profile-stat-bal').innerText = formatted;
                     document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
                 }
             } catch (error) { console.log("Đang chờ Backend phản hồi..."); }
+        }
+
+        function closeDepositSuccessModal() {
+            document.getElementById('deposit-success-modal').classList.add('hidden');
+            document.getElementById('deposit-success-modal').classList.remove('flex');
         }
 
         // 1. Core (Toast, Loader, Tabs)
@@ -511,6 +542,7 @@
             document.getElementById('profile-email').innerText = e || "Chưa có"; 
             document.getElementById('profile-avatar-letter').innerText = u.charAt(0); 
             localStorage.setItem('is_logged_in', 'true'); 
+            currentBalance = -1; // Đăng nhập mới thì reset biến theo dõi
             fetchRealBalance(u);
             if(balanceInterval) clearInterval(balanceInterval);
             balanceInterval = setInterval(() => fetchRealBalance(u), 5000);
@@ -564,6 +596,9 @@
         }
         
         function viewOrderDetails(t, n, d) { 
+            if(document.getElementById('order-detail-title').innerText !== "GIAO DỊCH THÀNH CÔNG") {
+                document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
+            }
             document.getElementById('order-item-name').innerText = n; 
             if (t === 'tool') {
                 document.getElementById('order-type-tool').classList.remove('hidden'); 
@@ -579,7 +614,6 @@
         }
         function closeOrderDetailModal() { 
             document.getElementById('order-detail-modal').classList.add('hidden'); 
-            // Reset tiêu đề về mặc định
             document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
         }
 
@@ -588,9 +622,15 @@
         function updateSummaryDisplay(v) { if(!v) { document.getElementById('summary-amount').innerText = "0 đ"; document.getElementById('summary-total').innerText = "0 đ"; return; } const f = formatVND(v) + " đ"; document.getElementById('summary-amount').innerText = f; document.getElementById('summary-total').innerText = f; }
         function handleInputAmount(i) { document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); updateSummaryDisplay(i.value); }
         function setAmount(a, btn) { document.getElementById('custom-amount').value = a; document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); btn.classList.remove('border-gray-200', 'text-gray-600', 'bg-white'); btn.classList.add('border-primary-500', 'text-primary-600', 'bg-primary-50'); updateSummaryDisplay(a); }
+        
+        let qrTimerInterval; // Khai báo biến đếm ngược
+
         function processDeposit() { 
             const a = document.getElementById('custom-amount').value; 
-            if(!a || a < 10000) { showToast("Tối thiểu 10.000 VNĐ!", true); return; } 
+            
+            // XỬ LÝ ÉP MIN 20K
+            if(!a || a < 20000) { showToast("Tối thiểu 20.000 VNĐ!", true); return; } 
+            
             const u = JSON.parse(localStorage.getItem('lmmmo_user'));
             const usernameForQR = u ? u.username.toUpperCase() : "KHACH";
             const c = `NAP LMMMO ${usernameForQR}`; 
@@ -602,9 +642,36 @@
             document.getElementById('deposit-qr-view').classList.add('flex'); 
             document.getElementById('deposit-input-area').classList.add('opacity-50', 'pointer-events-none'); 
             document.getElementById('deposit-method-area').classList.add('opacity-50', 'pointer-events-none'); 
+            
+            // BẮT ĐẦU ĐẾM NGƯỢC 10 PHÚT
+            let timeLeft = 600; // 600 giây = 10 phút
+            document.getElementById('qr-countdown').innerText = "10:00";
+            if(qrTimerInterval) clearInterval(qrTimerInterval);
+            qrTimerInterval = setInterval(() => {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                document.getElementById('qr-countdown').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+                
+                // Nếu hết 10 phút -> Hủy lệnh nạp
+                if (timeLeft <= 0) {
+                    clearInterval(qrTimerInterval);
+                    backToDepositForm(); // Đóng mã QR
+                    showToast("Lệnh nạp đã hết hạn!", true);
+                }
+            }, 1000);
+
             showToast("Đã tạo lệnh nạp tự động!"); 
         }
-        function backToDepositForm() { document.getElementById('deposit-qr-view').classList.remove('flex'); document.getElementById('deposit-qr-view').classList.add('hidden'); document.getElementById('deposit-summary-view').classList.remove('hidden'); document.getElementById('deposit-input-area').classList.remove('opacity-50', 'pointer-events-none'); document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); showToast("Đã hủy mã nạp hiện tại!", true); }
+
+        function backToDepositForm() { 
+            if(qrTimerInterval) clearInterval(qrTimerInterval); // Xóa đồng hồ khi đóng
+            document.getElementById('deposit-qr-view').classList.remove('flex'); 
+            document.getElementById('deposit-qr-view').classList.add('hidden'); 
+            document.getElementById('deposit-summary-view').classList.remove('hidden'); 
+            document.getElementById('deposit-input-area').classList.remove('opacity-50', 'pointer-events-none'); 
+            document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); 
+        }
 
         // 6. CỘNG ĐỒNG
         let mFile = null, mType = null, mURL = null;
@@ -631,7 +698,8 @@
                                 </div>
                             </div>
                             <div class="p-6">
-                                <p class="text-gray-800 text-[15px] whitespace-pre-line leading-relaxed">${p.content.replace(/\[Script\/Code\]:/g, '<strong class="text-blue-600 mt-2 block">💻 Mã Script/Code đính kèm:</strong>')}</p>
+                                <p class="text-gray-800 text-[15px] whitespace-pre-line leading-relaxed mb-4">${p.content.replace(/\[Script\/Code\]:/g, '<strong class="text-blue-600 mt-2 block">💻 Mã Script/Code đính kèm:</strong>')}</p>
+                                <button onclick="showToast('Chức năng bình luận đang được Dev LMMMO phát triển!', true)" class="text-gray-500 hover:text-primary-600 font-bold text-sm flex items-center gap-2 transition bg-gray-50 px-4 py-2 rounded-lg"><i class="far fa-comment-alt"></i> Bình luận</button>
                             </div>
                         </div>`;
                         feed.insertAdjacentHTML('beforeend', html);
@@ -705,7 +773,7 @@
         function openChat(u) { document.getElementById('chat-list-name').innerText = u; document.getElementById('chat-header-name').innerText = u; document.getElementById('chat-empty-area').classList.add('hidden'); document.getElementById('chat-active-area').classList.remove('hidden'); switchTab('chat-tab'); }
 
         // 8. CHỢ TÀI NGUYÊN (MUA BÁN TOOL)
-        let currentPurchase = null; // Biến lưu tạm dữ liệu món hàng đang định mua
+        let currentPurchase = null; 
 
         async function loadPaidTools() {
             try {
@@ -715,7 +783,6 @@
                 if (data.tools && data.tools.length > 0) {
                     let html = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
                     data.tools.forEach(t => {
-                        // Mã hóa phần mô tả để tránh bị lỗi nháy kép (quotes)
                         let safeDesc = encodeURIComponent(t.description || '');
 
                         html += `
@@ -736,7 +803,6 @@
             } catch (e) { console.log("Lỗi tải Chợ Tool", e); }
         }
 
-        // --- HÀM MỞ BẢNG XEM CHI TIẾT TOOL (CÓ LINK CLICK ĐƯỢC) ---
         function openToolDetail(id, name, price, safeDesc) {
             let desc = decodeURIComponent(safeDesc);
             document.getElementById('detail-modal-title').innerText = name;
@@ -746,7 +812,6 @@
             
             document.getElementById('detail-modal-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " đ";
             
-            // Cài đặt sự kiện cho nút "Mua ngay" bên trong bảng Chi Tiết
             document.getElementById('detail-modal-buy-btn').onclick = function() {
                 closeToolDetailModal();
                 buyTool(id, name, price);
@@ -758,16 +823,13 @@
             document.getElementById('tool-detail-modal').classList.add('hidden');
         }
 
-        // --- HÀM MỞ BẢNG XÁC NHẬN MUA (THAY THẾ CONFIRM PHÈN) ---
         function buyTool(toolId, toolName, price) {
             if (localStorage.getItem('is_logged_in') !== 'true') { 
                 showToast("Bạn cần đăng nhập để mua hàng!", true); 
                 return; 
             }
-            // Lưu tạm món hàng vào bộ nhớ
             currentPurchase = { id: toolId, name: toolName, price: price };
             
-            // Đổ dữ liệu ra bảng Xác Nhận
             document.getElementById('confirm-tool-name').innerText = toolName;
             document.getElementById('confirm-tool-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " VNĐ";
             document.getElementById('confirm-purchase-modal').classList.remove('hidden');
@@ -775,10 +837,9 @@
 
         function closeConfirmModal() {
             document.getElementById('confirm-purchase-modal').classList.add('hidden');
-            currentPurchase = null; // Hủy lưu tạm
+            currentPurchase = null;
         }
 
-        // --- HÀM TIẾN HÀNH TRỪ TIỀN (SAU KHI BẤM NÚT XÁC NHẬN MUA) ---
         async function executePurchase() {
             if (!currentPurchase) return;
             
@@ -793,7 +854,6 @@
                 });
                 let data = await res.json();
                 
-                // Đóng bảng xác nhận lại
                 closeConfirmModal();
 
                 if (res.ok) {
@@ -804,7 +864,6 @@
                     loadPaidTools();
                     getOrderHistory(); 
                     
-                    // Mở bảng Chi Tiết Mặt Hàng xịn xò để báo link
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
                     viewOrderDetails('tool', currentPurchase.name, data.download_link);
                 } else { showToast("Lỗi: " + data.error, true); }
