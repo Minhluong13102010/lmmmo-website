@@ -188,14 +188,8 @@
 
         <div id="tool-free-tab" class="tab-content hidden">
             <div class="text-center mb-10"><h2 class="text-3xl font-black mb-2 uppercase text-gray-800">Công Cụ Miễn Phí</h2><p class="text-gray-500">Tuyển tập phần mềm hỗ trợ đắc lực công việc MMO</p></div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl hover:border-primary-300 transition duration-300 group">
-                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition duration-300"><i class="fas fa-language text-3xl text-blue-500 group-hover:text-white transition duration-300"></i></div>
-                    <h3 class="font-bold text-xl mb-3 text-gray-800">Dịch Sub Trung - Việt</h3>
-                    <p class="text-gray-500 text-sm mb-6 leading-relaxed">Hỗ trợ upload file .srt, dịch tự động giữ nguyên timestamp và loại bỏ lỗi font. Hoàn toàn miễn phí.</p>
-                    <button class="w-full bg-gray-50 text-gray-700 py-3 rounded-xl font-bold hover:bg-primary-600 hover:text-white transition border border-gray-200 hover:border-primary-600">Sử dụng công cụ</button>
-                </div>
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="free-tool-list"></div>
+            <div class="text-center text-gray-400 mt-16" id="empty-free-tool-msg"><i class="fas fa-box-open text-6xl mb-4 text-gray-200"></i><p class="font-medium">Chưa có công cụ miễn phí nào được chia sẻ.</p></div>
         </div>
 
         <div id="resource-tab" class="tab-content hidden">
@@ -330,12 +324,17 @@
                             <p class="text-center text-red-500 font-bold mb-4 text-sm bg-red-50 py-2 rounded-lg border border-red-100 w-full shadow-sm"><i class="fas fa-clock mr-1"></i> Hết hạn sau: <span id="qr-countdown" class="text-lg tracking-wider">10:00</span></p>
                             
                             <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 mb-6"><img id="qr-image-display" src="" class="w-56 h-56 rounded-xl"></div>
+                            
                             <div class="w-full bg-white p-5 rounded-xl border border-gray-200 text-sm space-y-3 text-left mb-6 shadow-sm">
                                 <div class="flex justify-between border-b border-gray-50 pb-2"><span class="text-gray-500">Ngân hàng:</span> <strong class="text-gray-800">MB Bank</strong></div>
                                 <div class="flex justify-between border-b border-gray-50 pb-2"><span class="text-gray-500">Chủ tài khoản:</span> <strong class="text-gray-800">LUONG BINH MINH</strong></div>
                                 <div class="flex justify-between border-b border-gray-50 pb-2"><span class="text-gray-500">Số tài khoản:</span> <strong class="text-lg text-gray-900 tracking-wider">0346099785</strong></div>
                                 <div class="flex justify-between border-b border-gray-50 pb-2"><span class="text-gray-500">Số tiền:</span> <strong id="qr-amount-text" class="text-red-500 text-lg"></strong></div>
                                 <div class="pt-1"><p class="mb-2 text-gray-500 text-xs uppercase font-bold">Nội dung chuyển khoản (Bắt buộc):</p><div class="bg-primary-50 border border-primary-200 text-primary-700 font-mono font-bold px-3 py-2.5 rounded-lg text-center tracking-widest text-lg shadow-inner select-all" id="qr-content-text"></div></div>
+                                
+                                <div class="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg">
+                                    <p class="text-xs text-red-600 font-bold leading-relaxed text-center"><i class="fas fa-exclamation-triangle mr-1"></i> LƯU Ý QUAN TRỌNG:<br>Vui lòng sao chép CHÍNH XÁC nội dung chuyển khoản và nhập đúng số tiền để hệ thống duyệt tự động. LMMMO xin từ chối hỗ trợ các trường hợp chuyển sai nội dung hoặc sai số tiền.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
