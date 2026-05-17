@@ -211,7 +211,7 @@
             <div class="bg-white rounded-3xl shadow-sm border border-gray-200 p-10">
                 <h1 class="text-3xl font-black mt-2 mb-3 text-gray-800 leading-tight" id="job-detail-title">Tiêu đề</h1>
                 <p class="text-primary-600 font-black mb-8 text-xl" id="job-detail-budget">Ngân sách: Thỏa thuận</p>
-                <div class="flex gap-4 mb-8 border-b border-gray-100 pb-8"><button onclick="openChat(document.getElementById('job-detail-author').innerText)" class="bg-primary-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-700 transition shadow-lg shadow-primary-200 flex items-center gap-2"><i class="fas fa-paper-plane"></i> Gửi tin nhắn ứng tuyển</button></div>
+                <div class="flex gap-4 mb-8 border-b border-gray-100 pb-8"><button id="btn-apply-job" class="bg-primary-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-700 transition shadow-lg shadow-primary-200 flex items-center gap-2"><i class="fas fa-paper-plane"></i> Gửi tin nhắn ứng tuyển</button></div>
                 <h3 class="font-black text-xl mb-4 text-gray-800">Mô tả chi tiết công việc:</h3>
                 <p id="job-detail-desc" class="text-gray-600 whitespace-pre-line leading-relaxed text-lg"></p>
                 <div class="mt-10 bg-gray-50 p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
@@ -424,7 +424,25 @@
         </div>
     </div>
 
-    <div id="job-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity"><div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col transform transition-transform"><div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center"><h2 class="text-2xl font-black text-gray-800">ĐĂNG TIN TUYỂN DỤNG</h2><button onclick="closeJobModal()" class="text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button></div><div class="p-8 overflow-y-auto space-y-6"><div><label class="block text-sm font-bold text-gray-700 mb-2">Tiêu đề công việc <span class="text-red-500">*</span></label><input type="text" id="job-title" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Ví dụ: Cần tool crawl data Facebook..."></div><div><label class="block text-sm font-bold text-gray-700 mb-2">Yêu cầu & Mô tả chi tiết <span class="text-red-500">*</span></label><textarea id="job-desc" rows="5" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Mô tả công việc, ngôn ngữ lập trình, deadline..."></textarea></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block text-sm font-bold text-gray-700 mb-2">Phân loại <span class="text-red-500">*</span></label><select id="job-category" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none bg-white focus:border-primary-500 cursor-pointer"><option value="">-- Lĩnh vực --</option><option value="Code Tool / Bot">Code Tool / Bot</option><option value="Thiết kế Web/Landing">Thiết kế Web/Landing</option><option value="Quản trị mxh">Quản trị Hệ thống/MXH</option><option value="Khác">Lĩnh vực khác</option></select></div><div><label class="block text-sm font-bold text-gray-700 mb-2">Hình thức trả lương</label><select id="job-budget-type" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none bg-white focus:border-primary-500 cursor-pointer"><option value="Khoán">Khoán trọn gói</option><option value="Theo ngày">Trả theo ngày</option><option value="Theo tháng">Trả theo tháng</option><option value="Thỏa thuận">Thỏa thuận trực tiếp</option></select></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block text-sm font-bold text-gray-700 mb-2">Ngân sách dự kiến (VNĐ)</label><input type="text" id="job-min-price" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 transition" placeholder="Từ (Tùy chọn)"></div><div><label class="block text-sm font-bold text-gray-700 mb-2 opacity-0 hidden md:block">Max</label><input type="text" id="job-max-price" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 transition" placeholder="Đến cực đại (Tùy chọn)"></div></div></div><div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"><button onclick="closeJobModal()" class="px-6 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition">Hủy bỏ</button><button onclick="submitJob()" class="px-8 py-3.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md shadow-primary-200 transition">ĐĂNG TUYỂN</button></div></div></div>
+    <div id="job-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col transform transition-transform">
+            <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center"><h2 class="text-2xl font-black text-gray-800">ĐĂNG TIN TUYỂN DỤNG</h2><button onclick="closeJobModal()" class="text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button></div>
+            <div class="p-8 overflow-y-auto space-y-6">
+                <div><label class="block text-sm font-bold text-gray-700 mb-2">Tiêu đề công việc <span class="text-red-500">*</span></label><input type="text" id="job-title" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Ví dụ: Cần tool crawl data Facebook..."></div>
+                <div><label class="block text-sm font-bold text-gray-700 mb-2">Yêu cầu & Mô tả chi tiết <span class="text-red-500">*</span></label><textarea id="job-desc" rows="5" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Mô tả công việc, ngôn ngữ lập trình, deadline..."></textarea></div>
+                <div><label class="block text-sm font-bold text-gray-700 mb-2">Link Zalo / Telegram liên hệ <span class="text-red-500">*</span></label><input type="text" id="job-zalo-link" class="w-full border border-primary-300 bg-green-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-600 transition" placeholder="Ví dụ: https://zalo.me/0123456789"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2">Phân loại <span class="text-red-500">*</span></label><select id="job-category" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none bg-white focus:border-primary-500 cursor-pointer"><option value="">-- Lĩnh vực --</option><option value="Code Tool / Bot">Code Tool / Bot</option><option value="Thiết kế Web/Landing">Thiết kế Web/Landing</option><option value="Quản trị mxh">Quản trị Hệ thống/MXH</option><option value="Khác">Lĩnh vực khác</option></select></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2">Hình thức trả lương</label><select id="job-budget-type" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none bg-white focus:border-primary-500 cursor-pointer"><option value="Khoán">Khoán trọn gói</option><option value="Theo ngày">Trả theo ngày</option><option value="Theo tháng">Trả theo tháng</option><option value="Thỏa thuận">Thỏa thuận trực tiếp</option></select></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2">Ngân sách dự kiến (VNĐ)</label><input type="text" id="job-min-price" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 transition" placeholder="Từ (Tùy chọn - Nhập số)"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2 opacity-0 hidden md:block">Max</label><input type="text" id="job-max-price" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 transition" placeholder="Đến cực đại (Tùy chọn - Nhập số)"></div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"><button onclick="closeJobModal()" class="px-6 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition">Hủy bỏ</button><button onclick="submitJob()" class="px-8 py-3.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md shadow-primary-200 transition">ĐĂNG TUYỂN</button></div>
+        </div>
+    </div>
 
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative transform transition-all"><button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition"><i class="fas fa-times"></i></button><div class="p-10"><div class="text-center mb-8"><div class="w-16 h-16 bg-primary-600 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-primary-200"><i class="fas fa-shield-check"></i></div><h2 id="auth-title" class="text-2xl font-black text-gray-800 tracking-tight">Đăng nhập</h2></div>
         <div id="login-form" class="block"><div class="space-y-4"><input type="text" id="login-identifier" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500" placeholder="Tên đăng nhập / Email"><div><input type="password" id="login-password" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500" placeholder="Mật khẩu"><div class="text-right mt-1"><button onclick="switchAuthView('forgot')" class="text-xs text-primary-600 font-bold hover:underline">Quên mật khẩu?</button></div></div><div id="login-error" class="text-red-500 text-sm hidden font-medium text-center bg-red-50 p-2 rounded-lg"></div><button onclick="handleLogin()" class="w-full bg-primary-600 text-white font-bold rounded-xl py-3.5 hover:bg-primary-700 shadow-md">Đăng nhập ngay</button></div><p class="text-center text-sm text-gray-500 mt-6 font-medium">Bạn là người mới? <button onclick="switchAuthView('register')" class="text-primary-600 font-bold hover:underline">Tạo tài khoản</button></p></div>
@@ -437,12 +455,10 @@
     </div></div></div>
 
     <script>
-        // --- CHUỖI KẾT NỐI VỚI BACKEND RENDER ---
         const BACKEND_URL = 'https://api-lmmmo.onrender.com';
         let balanceInterval; 
         let currentBalance = -1; 
 
-        // THUẬT TOÁN TỰ ĐỘNG BIẾN CHỮ THÀNH LINK CLICK ĐƯỢC
         function linkify(text) {
             var urlRegex = /(https?:\/\/[^\s]+)/g;
             return text.replace(urlRegex, function(url) {
@@ -450,13 +466,11 @@
             });
         }
 
-        // HÀM LẤY SỐ DƯ REAL-TIME TỪ BACKEND VÀ HIỆN BẢNG CHÚC MỪNG
         async function fetchRealBalance(username) {
             try {
                 const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`);
                 if (response.ok) {
                     const data = await response.json();
-                    
                     if (currentBalance !== -1 && data.balance > currentBalance) {
                         let addedAmount = data.balance - currentBalance;
                         document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
@@ -465,7 +479,6 @@
                         backToDepositForm(); 
                     }
                     currentBalance = data.balance; 
-
                     const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
                     document.getElementById('balance-display').innerText = formatted;
                     document.getElementById('stat-balance').innerText = formatted;
@@ -480,11 +493,9 @@
             document.getElementById('deposit-success-modal').classList.remove('flex');
         }
 
-        // 1. Core (Toast, Loader, Tabs)
         function showToast(msg, err = false) { const t = document.getElementById('toast-notification'), i = document.getElementById('toast-icon'); document.getElementById('toast-message').innerText = msg; if(err) { t.classList.replace('border-primary-500', 'border-red-500'); i.className = 'fas fa-exclamation text-red-600'; i.parentElement.classList.replace('bg-primary-100', 'bg-red-100'); } else { t.classList.replace('border-red-500', 'border-primary-500'); i.className = 'fas fa-check text-primary-600'; i.parentElement.classList.replace('bg-red-100', 'bg-primary-100'); } t.classList.remove('translate-x-[150%]', 'opacity-0'); setTimeout(() => { t.classList.add('translate-x-[150%]', 'opacity-0'); }, 3000); }
         function switchTab(tabId) { const l = document.getElementById('global-loader'); l.classList.remove('hidden'); l.classList.add('flex'); document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn text-gray-500 hover:text-primary-600 font-bold whitespace-nowrap pb-1 border-b-2 border-transparent uppercase text-sm tracking-wide transition'); let idx = {'home-tab':0, 'tool-free-tab':1, 'resource-tab':2, 'jobs-tab':3, 'job-detail-tab':3, 'social-tab':4}[tabId]; if(idx !== undefined) { const btn = document.querySelectorAll('.nav-btn')[idx]; btn.className = tabId === 'social-tab' ? 'nav-btn text-red-600 font-bold whitespace-nowrap pb-1 border-b-2 border-red-600 uppercase text-sm tracking-wide transition' : 'nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap pb-1 uppercase text-sm tracking-wide transition'; } setTimeout(() => { document.querySelectorAll('.tab-content').forEach(t => { t.classList.add('hidden'); t.classList.remove('block'); }); document.getElementById(tabId).classList.remove('hidden'); document.getElementById(tabId).classList.add('block'); window.scrollTo(0, 0); l.classList.add('hidden'); l.classList.remove('flex'); }, 400); }
 
-        // 2. User Menu & Auth
         function toggleUserDropdown() { const d = document.getElementById('user-dropdown'); if(d.classList.contains('dropdown-hidden')) { d.classList.remove('dropdown-hidden'); d.classList.add('dropdown-visible'); } else { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } }
         document.addEventListener('click', function(e) { const b = document.getElementById('user-profile-btn'), d = document.getElementById('user-dropdown'); if (!b.contains(e.target) && d.classList.contains('dropdown-visible')) { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } });
         function toggleAuthModal(s) { document.getElementById('auth-modal').classList.toggle('hidden', !s); if(s) { switchAuthView('login'); document.getElementById('login-error').classList.add('hidden'); document.getElementById('reg-error').classList.add('hidden'); } }
@@ -497,12 +508,10 @@
             if(p.length < 6) { box.innerText = "Mật khẩu > 6 ký tự!"; box.classList.remove('hidden'); return; }
             box.classList.add('hidden'); const btn = document.querySelector('#register-form button'); btn.innerText = "Đang xử lý...";
             try {
-                const response = await fetch(`${BACKEND_URL}/register/`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: e, username: u, password: p })
-                });
+                const response = await fetch(`${BACKEND_URL}/register/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: e, username: u, password: p }) });
                 const data = await response.json();
                 if(response.ok) { showToast("Đăng ký thành công!"); switchAuthView('login'); } 
-                else { box.innerText = data.error || "Tên đăng nhập hoặc Email đã tồn tại!"; box.classList.remove('hidden'); }
+                else { box.innerText = data.error || "Tên đăng nhập đã tồn tại!"; box.classList.remove('hidden'); }
             } catch (error) { box.innerText = "Lỗi kết nối đến máy chủ!"; box.classList.remove('hidden'); } finally { btn.innerText = "Đăng ký"; }
         }
 
@@ -511,9 +520,7 @@
             if(!id || !p) { box.innerText = "Điền đủ thông tin!"; box.classList.remove('hidden'); return; }
             const btn = document.querySelector('#login-form button'); btn.innerText = "Đang kiểm tra...";
             try {
-                const response = await fetch(`${BACKEND_URL}/login/`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: id, password: p })
-                });
+                const response = await fetch(`${BACKEND_URL}/login/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: id, password: p }) });
                 const data = await response.json();
                 if(response.ok) {
                     box.classList.add('hidden'); toggleAuthModal(false);
@@ -562,7 +569,6 @@
             if(balanceInterval) clearInterval(balanceInterval);
         }
 
-        // 3. Security (Password, Email, PIN)
         let secAction = '';
         function checkPinStatus() { const u = JSON.parse(localStorage.getItem('lmmmo_user')), b = document.getElementById('pin-status-badge'); if(u && u.pin) { b.innerText = "Đã bật"; b.className = "bg-green-100 text-green-600 px-2 py-0.5 rounded text-[10px] ml-2"; } else { b.innerText = "Chưa tạo"; b.className = "bg-gray-200 text-gray-500 px-2 py-0.5 rounded text-[10px] ml-2"; } }
         function openSecurityModal(a) { secAction = a; document.getElementById('security-modal').classList.remove('hidden'); document.getElementById('sec-current-pass').value = ''; document.getElementById('sec-new-input').value = ''; document.getElementById('sec-error').classList.add('hidden'); document.getElementById('sec-remove-pin-opt').classList.add('hidden'); document.getElementById('checkbox-remove-pin').checked = false; document.getElementById('sec-new-input').disabled = false; const i = document.getElementById('sec-icon'), t = document.getElementById('sec-title'), l = document.getElementById('sec-new-label'), inp = document.getElementById('sec-new-input'); if(a === 'password') { i.innerHTML = '<i class="fas fa-key"></i>'; t.innerText = "ĐỔI MẬT KHẨU"; l.innerText = "Mật khẩu mới (>6 ký tự)"; inp.type = "password"; inp.placeholder = "Nhập mật khẩu mới"; } else if (a === 'email') { i.innerHTML = '<i class="fas fa-envelope"></i>'; t.innerText = "ĐỔI GMAIL"; l.innerText = "Gmail mới"; inp.type = "email"; inp.placeholder = "Nhập email mới"; } else if (a === 'pin') { i.innerHTML = '<i class="fas fa-th"></i>'; t.innerText = "MÃ PIN GIAO DỊCH"; l.innerText = "Mã PIN mới (4 số)"; inp.type = "password"; inp.placeholder = "****"; inp.maxLength = 4; const u = JSON.parse(localStorage.getItem('lmmmo_user')); if(u && u.pin) document.getElementById('sec-remove-pin-opt').classList.remove('hidden'); } }
@@ -570,11 +576,7 @@
         function togglePinInput(cb) { document.getElementById('sec-new-input').disabled = cb.checked; }
         function handleSecuritySave() { const curr = document.getElementById('sec-current-pass').value, nData = document.getElementById('sec-new-input').value, isRm = document.getElementById('checkbox-remove-pin').checked, err = document.getElementById('sec-error'), u = JSON.parse(localStorage.getItem('lmmmo_user')); if(curr !== u.password) { err.innerText = "Mật khẩu hiện tại sai!"; err.classList.remove('hidden'); return; } if(secAction === 'password') { if(nData.length < 6) { err.innerText = "Mật khẩu quá ngắn!"; err.classList.remove('hidden'); return; } u.password = nData; showToast("Đã đổi mật khẩu!"); } else if (secAction === 'email') { if(!nData.includes('@')) { err.innerText = "Gmail không hợp lệ!"; err.classList.remove('hidden'); return; } u.email = nData; document.getElementById('profile-email').innerText = nData; showToast("Đã cập nhật Gmail!"); } else if (secAction === 'pin') { if(isRm) { delete u.pin; showToast("Đã xóa mã PIN!"); } else { if(!/^\d{4}$/.test(nData)) { err.innerText = "Mã PIN phải 4 số!"; err.classList.remove('hidden'); return; } u.pin = nData; showToast("Đã thiết lập mã PIN!"); } } localStorage.setItem('lmmmo_user', JSON.stringify(u)); closeSecurityModal(); checkPinStatus(); }
 
-        // 4. Lịch sử mua hàng (UPDATE: GỌI DATA MỚI MỖI KHI MỞ)
-        function openHistoryModal() { 
-            getOrderHistory(); // Load lại mới nhất
-            document.getElementById('history-modal').classList.remove('hidden'); 
-        } 
+        function openHistoryModal() { getOrderHistory(); document.getElementById('history-modal').classList.remove('hidden'); } 
         function closeHistoryModal() { document.getElementById('history-modal').classList.add('hidden'); }
         
         async function getOrderHistory() {
@@ -621,7 +623,7 @@
             document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
         }
 
-        // 5. Nạp Tiền
+        // Nạp Tiền
         function formatVND(n) { return new Intl.NumberFormat('vi-VN').format(n); }
         function updateSummaryDisplay(v) { if(!v) { document.getElementById('summary-amount').innerText = "0 đ"; document.getElementById('summary-total').innerText = "0 đ"; return; } const f = formatVND(v) + " đ"; document.getElementById('summary-amount').innerText = f; document.getElementById('summary-total').innerText = f; }
         function handleInputAmount(i) { document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); updateSummaryDisplay(i.value); }
@@ -631,7 +633,6 @@
 
         function processDeposit() { 
             const a = document.getElementById('custom-amount').value; 
-            
             if(!a || a < 20000) { showToast("Tối thiểu 20.000 VNĐ!", true); return; } 
             
             const u = JSON.parse(localStorage.getItem('lmmmo_user'));
@@ -661,7 +662,6 @@
                     showToast("Lệnh nạp đã hết hạn!", true);
                 }
             }, 1000);
-
             showToast("Đã tạo lệnh nạp tự động!"); 
         }
 
@@ -674,7 +674,9 @@
             document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); 
         }
 
-        // 6. CỘNG ĐỒNG
+        // ==========================================
+        // 6. CỘNG ĐỒNG (UPDATE THÊM BÌNH LUẬN)
+        // ==========================================
         let mFile = null, mType = null, mURL = null;
         function handleMediaSelect(i) { if(i.files && i.files[0]) { mFile = i.files[0]; mType = mFile.type.startsWith('video/') ? 'video' : 'image'; mURL = URL.createObjectURL(mFile); const c = document.getElementById('media-preview-content'); c.innerHTML = mType === 'video' ? `<video src="${mURL}" controls class="h-40 object-cover"></video>` : `<img src="${mURL}" class="h-40 object-cover">`; document.getElementById('media-preview-container').classList.remove('hidden'); } }
         function clearMedia() { mFile = null; mType = null; mURL = null; document.getElementById('media-upload').value = ''; document.getElementById('media-preview-container').classList.add('hidden'); }
@@ -690,6 +692,32 @@
                     document.getElementById('empty-feed-msg').style.display = 'none';
                     data.posts.forEach(p => {
                         let badge = p.is_pinned ? `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-1 rounded ml-2 border border-red-100"><i class="fas fa-thumbtack"></i> ĐÃ GHIM</span>` : '';
+                        
+                        // LẮP RÁP BÌNH LUẬN HIỂN THỊ
+                        let commentsHtml = '<div class="mt-4 border-t border-gray-100 pt-4 space-y-3">';
+                        if (p.comments && p.comments.length > 0) {
+                            p.comments.forEach(c => {
+                                commentsHtml += `
+                                <div class="bg-gray-50 rounded-xl p-3 relative group">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-[10px] font-bold">${c.author.charAt(0).toUpperCase()}</div>
+                                        <span class="font-bold text-gray-800 text-xs">${c.author}</span>
+                                        <span class="text-[10px] text-gray-400"><i class="far fa-clock"></i> ${c.created_at}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-700 pl-8">${c.content}</p>
+                                </div>`;
+                            });
+                        }
+                        commentsHtml += '</div>';
+
+                        // Ô NHẬP BÌNH LUẬN
+                        let commentInputHtml = `
+                        <div class="mt-4 flex gap-2 items-center">
+                            <div class="w-8 h-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center text-xs font-bold shrink-0"><i class="fas fa-comment-dots"></i></div>
+                            <input type="text" id="comment-input-${p.id}" placeholder="Viết bình luận..." class="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm outline-none focus:border-primary-300 focus:bg-white transition" onkeypress="if(event.key === 'Enter') submitComment(${p.id})">
+                            <button onclick="submitComment(${p.id})" class="bg-primary-600 text-white hover:bg-primary-700 w-9 h-9 rounded-full flex items-center justify-center transition shadow-md shrink-0"><i class="fas fa-paper-plane text-xs"></i></button>
+                        </div>`;
+
                         let html = `
                         <div class="post-card bg-white rounded-3xl shadow-sm border ${p.is_pinned ? 'border-red-300 shadow-md' : 'border-gray-100'} overflow-hidden mb-6">
                             <div class="p-6 flex justify-between items-start border-b border-gray-50">
@@ -700,7 +728,8 @@
                             </div>
                             <div class="p-6">
                                 <p class="text-gray-800 text-[15px] whitespace-pre-line leading-relaxed mb-4">${p.content.replace(/\[Script\/Code\]:/g, '<strong class="text-blue-600 mt-2 block">💻 Mã Script/Code đính kèm:</strong>')}</p>
-                                <button onclick="showToast('Chức năng bình luận đang được Dev LMMMO phát triển!', true)" class="text-gray-500 hover:text-primary-600 font-bold text-sm flex items-center gap-2 transition bg-gray-50 px-4 py-2 rounded-lg"><i class="far fa-comment-alt"></i> Bình luận</button>
+                                ${commentsHtml}
+                                ${commentInputHtml}
                             </div>
                         </div>`;
                         feed.insertAdjacentHTML('beforeend', html);
@@ -714,7 +743,12 @@
             const scr = document.getElementById('script-input') ? document.getElementById('script-input').value.trim() : ''; 
             let finalContent = txt; if (scr) finalContent += `\n\n[Script/Code]:\n${scr}`;
             if(!finalContent) { showToast("Vui lòng nhập nội dung!", true); return; } 
-            const u = localStorage.getItem('is_logged_in') === 'true' ? JSON.parse(localStorage.getItem('lmmmo_user')).username : "Khách"; 
+            
+            if (localStorage.getItem('is_logged_in') !== 'true') { 
+                showToast("Bạn cần đăng nhập để đăng bài!", true); 
+                return; 
+            }
+            const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             try {
                 let res = await fetch(`${BACKEND_URL}/community/`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: u, content: finalContent})
@@ -726,6 +760,35 @@
                     clearMedia(); showToast("Đăng bài thành công!"); loadCommunityPosts(); 
                 }
             } catch(e) { showToast("Lỗi máy chủ!", true); }
+        }
+
+        // HÀM GỬI BÌNH LUẬN MỚI
+        async function submitComment(postId) {
+            if (localStorage.getItem('is_logged_in') !== 'true') {
+                showToast("Bạn cần đăng nhập để bình luận!", true);
+                return;
+            }
+            const inputEl = document.getElementById(`comment-input-${postId}`);
+            const content = inputEl.value.trim();
+            if(!content) return;
+
+            const author = JSON.parse(localStorage.getItem('lmmmo_user')).username;
+
+            try {
+                let res = await fetch(`${BACKEND_URL}/add-comment/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ post_id: postId, author: author, content: content })
+                });
+                if(res.ok) {
+                    inputEl.value = '';
+                    loadCommunityPosts(); // Load lại để hiện bình luận mới
+                } else {
+                    showToast("Lỗi khi gửi bình luận!", true);
+                }
+            } catch(e) {
+                showToast("Lỗi kết nối!", true);
+            }
         }
 
         // 7. VIỆC LÀM
@@ -741,8 +804,18 @@
                     document.getElementById('empty-job-msg').style.display = 'none';
                     data.jobs.forEach(j => {
                         let badge = j.is_pinned ? `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-3 py-1 rounded-full border border-red-200 mr-2 shadow-sm"><i class="fas fa-thumbtack"></i> ĐÃ GHIM</span>` : '';
+                        
+                        let actualDesc = j.description || "";
+                        let zaloLink = "";
+                        let match = actualDesc.match(/\[ZALO\](.*?)\[\/ZALO\]/);
+                        if(match) {
+                            zaloLink = match[1];
+                            actualDesc = actualDesc.replace(match[0], '').trim(); 
+                        }
+                        let safeDesc = encodeURIComponent(actualDesc);
+
                         let html = `
-                        <div class="bg-white border ${j.is_pinned ? 'border-red-300 shadow-lg' : 'border-gray-100'} rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 transition cursor-pointer flex flex-col" onclick="viewJobDetail('${j.title}', '${j.budget_info}', \`${j.description}\`, '${j.author}')">
+                        <div class="bg-white border ${j.is_pinned ? 'border-red-300 shadow-lg' : 'border-gray-100'} rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 transition cursor-pointer flex flex-col" onclick="viewJobDetail('${j.title}', '${j.budget_info}', '${safeDesc}', '${j.author}', '${zaloLink}')">
                             <div class="mb-3">${badge}<span class="bg-green-50 text-green-600 text-[10px] font-bold px-3 py-1 rounded-full border border-green-200 shadow-sm"><i class="fas fa-check-circle"></i> ĐANG TUYỂN</span></div>
                             <h3 class="text-lg font-black mt-2 mb-2 text-gray-800 line-clamp-2">${j.title}</h3>
                             <p class="text-sm text-gray-500 mb-4 font-medium"><i class="fas fa-tag mr-1 text-gray-400"></i> ${j.category}</p>
@@ -759,19 +832,60 @@
         }
 
         async function submitJob() { 
-            const t = document.getElementById('job-title').value, d = document.getElementById('job-desc').value, c = document.getElementById('job-category').value, bt = document.getElementById('job-budget-type').value, min = document.getElementById('job-min-price').value, max = document.getElementById('job-max-price').value; 
-            if(!t || !d || !c) return showToast("Nhập đủ thông tin có dấu (*)", true); 
-            let txt = bt + ": Thỏa thuận"; if(min && max) txt = `${bt}: ${formatVND(min)} - ${formatVND(max)} Đ`; else if(min) txt = `${bt}: Từ ${formatVND(min)} Đ`; 
+            const t = document.getElementById('job-title').value.trim();
+            const d = document.getElementById('job-desc').value.trim();
+            const c = document.getElementById('job-category').value;
+            const bt = document.getElementById('job-budget-type').value;
+            const z = document.getElementById('job-zalo-link').value.trim();
+            
+            let rawMin = document.getElementById('job-min-price').value.replace(/\D/g, ''); 
+            let rawMax = document.getElementById('job-max-price').value.replace(/\D/g, '');
+            let min = rawMin ? parseInt(rawMin) : 0;
+            let max = rawMax ? parseInt(rawMax) : 0;
+
+            if(!t || !d || !c || !z) return showToast("Nhập đủ thông tin có dấu (*)", true); 
+            
+            let txt = bt + ": Thỏa thuận"; 
+            if(min > 0 && max > 0) { txt = `${bt}: ${formatVND(min)} - ${formatVND(max)} Đ`; } 
+            else if(min > 0) { txt = `${bt}: Từ ${formatVND(min)} Đ`; }
+            
+            const finalDesc = d + "\n\n[ZALO]" + z + "[/ZALO]";
+
             const a = localStorage.getItem('is_logged_in') === 'true' ? JSON.parse(localStorage.getItem('lmmmo_user')).username : "Khách"; 
             try {
                 let res = await fetch(`${BACKEND_URL}/jobs/`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: a, title: t, description: d, category: c, budget_info: txt})
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: a, title: t, description: finalDesc, category: c, budget_info: txt})
                 });
-                if(res.ok) { closeJobModal(); showToast("Đăng tin tuyển dụng thành công!"); document.getElementById('job-title').value = ''; document.getElementById('job-desc').value = ''; document.getElementById('job-min-price').value = ''; document.getElementById('job-max-price').value = ''; loadJobs(); }
+                if(res.ok) { 
+                    closeJobModal(); 
+                    showToast("Đăng tin tuyển dụng thành công!"); 
+                    document.getElementById('job-title').value = ''; 
+                    document.getElementById('job-desc').value = ''; 
+                    document.getElementById('job-zalo-link').value = ''; 
+                    document.getElementById('job-min-price').value = ''; 
+                    document.getElementById('job-max-price').value = ''; 
+                    loadJobs(); 
+                }
             } catch(e) { showToast("Lỗi máy chủ!", true); }
         } 
-        function viewJobDetail(t, b, d, a) { document.getElementById('job-detail-title').innerText = t; document.getElementById('job-detail-budget').innerText = "Ngân sách: " + b; document.getElementById('job-detail-desc').innerText = d; document.getElementById('job-detail-author').innerText = a; switchTab('job-detail-tab'); } 
-        function openChat(u) { document.getElementById('chat-list-name').innerText = u; document.getElementById('chat-header-name').innerText = u; document.getElementById('chat-empty-area').classList.add('hidden'); document.getElementById('chat-active-area').classList.remove('hidden'); switchTab('chat-tab'); }
+        
+        function viewJobDetail(t, b, safeDesc, a, z) { 
+            document.getElementById('job-detail-title').innerText = t; 
+            document.getElementById('job-detail-budget').innerText = "Ngân sách: " + b; 
+            document.getElementById('job-detail-desc').innerText = decodeURIComponent(safeDesc); 
+            document.getElementById('job-detail-author').innerText = a; 
+            
+            let btn = document.getElementById('btn-apply-job');
+            btn.onclick = function() {
+                if(z) {
+                    window.open(z, '_blank'); 
+                } else {
+                    alert(`Vui lòng copy tên người đăng [ ${a} ] và tìm kiếm trong nhóm Cộng Đồng Zalo của LMMMO để trao đổi trực tiếp!`);
+                }
+            };
+            
+            switchTab('job-detail-tab'); 
+        } 
 
         // 8. CHỢ TÀI NGUYÊN (MUA BÁN TOOL)
         let currentPurchase = null; 
@@ -790,9 +904,7 @@
                         <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', ${t.price}, '${safeDesc}')">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">${t.name}</h3>
                             <p class="text-xs text-gray-500 mb-4 font-bold"><i class="fas fa-shopping-cart text-primary-500"></i> Đã bán: ${t.sold_count}</p>
-                            
                             <p class="text-gray-600 text-sm mb-6 leading-relaxed flex-1 line-clamp-3">${t.description}</p>
-                            
                             <button onclick="event.stopPropagation(); buyTool(${t.id}, '${t.name}', ${t.price})" class="w-full bg-primary-600 text-white py-3 rounded-xl font-bold hover:bg-primary-700 transition shadow-md flex justify-between px-4">
                                 <span>Mua ngay</span><span>${new Intl.NumberFormat('vi-VN').format(t.price)} đ</span>
                             </button>
@@ -807,11 +919,8 @@
         function openToolDetail(id, name, price, safeDesc) {
             let desc = decodeURIComponent(safeDesc);
             document.getElementById('detail-modal-title').innerText = name;
-            
             document.getElementById('detail-modal-desc').innerHTML = linkify(desc);
-            
             document.getElementById('detail-modal-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " đ";
-            
             document.getElementById('detail-modal-buy-btn').onclick = function() {
                 closeToolDetailModal();
                 buyTool(id, name, price);
@@ -829,7 +938,6 @@
                 return; 
             }
             currentPurchase = { id: toolId, name: toolName, price: price };
-            
             document.getElementById('confirm-tool-name').innerText = toolName;
             document.getElementById('confirm-tool-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " VNĐ";
             document.getElementById('confirm-purchase-modal').classList.remove('hidden');
@@ -840,7 +948,6 @@
             currentPurchase = null;
         }
 
-        // --- BẢN VÁ LỖI CHỐNG CRASH KHI MUA HÀNG TRỌN VẸN 100% ---
         async function executePurchase() {
             if (!currentPurchase) return;
             
@@ -849,7 +956,6 @@
             btn.innerText = "Đang xử lý...";
             btn.disabled = true;
 
-            // LƯU LẠI TÊN VÀ ID TOOL TRƯỚC KHI BIẾN BỊ XÓA DỌN
             const savedToolName = currentPurchase.name;
             const savedToolId = currentPurchase.id;
 
@@ -861,7 +967,7 @@
                 });
                 let data = await res.json();
                 
-                closeConfirmModal(); // Hàm này chạy sẽ xóa biến currentPurchase = null
+                closeConfirmModal();
 
                 if (res.ok) {
                     showToast("Thanh toán thành công!");
@@ -872,13 +978,12 @@
                     getOrderHistory(); 
                     
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
-                    // Trả link dựa vào savedToolName an toàn thay vì currentPurchase.name
                     viewOrderDetails('tool', savedToolName, data.download_link);
                 } else { 
                     showToast("Lỗi: " + data.error, true); 
                 }
             } catch (e) { 
-                console.log("Bug JS:", e); // In lỗi ngầm ra màn hình F12 để theo dõi
+                console.log("Bug JS:", e);
                 closeConfirmModal();
                 showToast("Lỗi kết nối đến máy chủ Két sắt!", true); 
             } finally {
@@ -887,9 +992,6 @@
             }
         }
 
-        // ==========================================
-        // CÚ CHỐT: TỰ ĐỘNG CHẠY KHI MỞ WEB
-        // ==========================================
         window.onload = function() { 
             if(localStorage.getItem('is_logged_in') === 'true') { 
                 const u = JSON.parse(localStorage.getItem('lmmmo_user')); 
