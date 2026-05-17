@@ -104,7 +104,7 @@
                         <p class="text-gray-400 text-xs font-bold mb-2 uppercase tracking-wider">Tổng nạp tích lũy</p><p id="stat-total-deposit" class="text-3xl font-black text-green-500 tracking-tight">0 đ</p>
                     </div>
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 flex flex-col justify-center hover:border-orange-300 transition">
-                        <p class="text-gray-400 text-xs font-bold mb-2 uppercase tracking-wider">Nạp tháng hiện tại</p><p class="text-3xl font-black text-orange-500 tracking-tight">0 đ</p>
+                        <p class="text-gray-400 text-xs font-bold mb-2 uppercase tracking-wider">Tổng đã tiêu</p><p id="stat-total-spent" class="text-3xl font-black text-orange-500 tracking-tight">0 đ</p>
                     </div>
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 flex flex-col justify-center hover:border-gray-400 transition">
                         <p class="text-gray-400 text-xs font-bold mb-2 uppercase tracking-wider">Cấp bậc tài khoản</p><p class="text-2xl font-black text-gray-800 uppercase tracking-tight" id="stat-rank">KHÁCH</p>
@@ -156,18 +156,18 @@
             <div class="bg-white rounded-b-3xl shadow-sm border border-gray-200 border-t-0 pt-24 p-10 mt-0">
                 <div class="grid grid-cols-4 border-b border-gray-100 pb-8 text-center divide-x divide-gray-100">
                     <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Số dư ví</p><p class="text-2xl font-black text-gray-800" id="profile-stat-bal">0 Đ</p></div>
-                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng nạp</p><p class="text-2xl font-black text-green-500">0 Đ</p></div>
-                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng tiêu</p><p class="text-2xl font-black text-blue-600">0 Đ</p></div>
-                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Đã mua</p><p class="text-2xl font-black text-gray-800">0 ĐƠN</p></div>
+                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng nạp</p><p class="text-2xl font-black text-green-500" id="profile-stat-deposit">0 Đ</p></div>
+                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Tổng tiêu</p><p class="text-2xl font-black text-blue-600" id="profile-stat-spent">0 Đ</p></div>
+                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-2">Đã mua</p><p class="text-2xl font-black text-gray-800" id="profile-stat-orders">0 ĐƠN</p></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                     <div class="space-y-6">
                         <div class="border border-gray-200 rounded-2xl p-6 relative overflow-hidden">
                             <div class="absolute top-0 right-0 bg-green-50 text-green-600 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l border-green-100">An toàn</div>
-                            <h3 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">Lợi nhuận gộp</h3>
-                            <p class="text-3xl font-black text-green-500 mb-2">0 Đ</p>
-                            <p class="text-xs text-gray-400"><i class="fas fa-chart-line mr-1 text-green-400"></i> Dựa trên Nạp - Tiêu</p>
+                            <h3 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">Tổng dòng tiền giao dịch</h3>
+                            <p class="text-3xl font-black text-green-500 mb-2" id="profile-stat-profit">0 Đ</p>
+                            <p class="text-xs text-gray-400"><i class="fas fa-chart-line mr-1 text-green-400"></i> Bằng tổng nạp tích lũy</p>
                         </div>
                     </div>
                     
@@ -469,6 +469,7 @@
             });
         }
 
+        // BẮT CHUẨN DỮ LIỆU ĐỔ VỀ TỪ KÉT SẮT
         async function fetchRealBalance(username) {
             try {
                 const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`);
@@ -484,11 +485,29 @@
                     }
                     currentBalance = data.balance; 
 
-                    const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
-                    document.getElementById('balance-display').innerText = formatted;
-                    document.getElementById('stat-balance').innerText = formatted;
-                    document.getElementById('profile-stat-bal').innerText = formatted;
+                    const formattedBal = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
+                    document.getElementById('balance-display').innerText = formattedBal;
+                    document.getElementById('stat-balance').innerText = formattedBal;
                     document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
+                    
+                    // CẬP NHẬT CÁC CON SỐ THỐNG KÊ MỚI
+                    if (data.total_deposit !== undefined) {
+                        const fmtDep = new Intl.NumberFormat('vi-VN').format(data.total_deposit) + " đ";
+                        const fmtSpent = new Intl.NumberFormat('vi-VN').format(data.total_spent) + " đ";
+                        
+                        // Cập nhật Trang chủ
+                        if(document.getElementById('stat-total-deposit')) document.getElementById('stat-total-deposit').innerText = fmtDep;
+                        if(document.getElementById('stat-total-spent')) document.getElementById('stat-total-spent').innerText = fmtSpent;
+
+                        // Cập nhật Profile Cá Nhân
+                        if(document.getElementById('profile-stat-deposit')) {
+                            document.getElementById('profile-stat-bal').innerText = formattedBal.toUpperCase();
+                            document.getElementById('profile-stat-deposit').innerText = fmtDep.toUpperCase();
+                            document.getElementById('profile-stat-spent').innerText = fmtSpent.toUpperCase();
+                            document.getElementById('profile-stat-orders').innerText = data.order_count + " ĐƠN";
+                            document.getElementById('profile-stat-profit').innerText = fmtDep.toUpperCase(); // Gắn tạm vào Lợi nhuận gộp cho ngầu
+                        }
+                    }
                 }
             } catch (error) { console.log("Đang chờ Backend phản hồi..."); }
         }
@@ -566,6 +585,11 @@
             document.getElementById('balance-display').innerText = "0 đ"; 
             document.getElementById('stat-balance').innerText = "0 đ"; 
             document.getElementById('deposit-page-balance').innerText = "0"; 
+            
+            // XÓA TRẮNG SỐ LIỆU KHI ĐĂNG XUẤT
+            if(document.getElementById('stat-total-deposit')) document.getElementById('stat-total-deposit').innerText = "0 đ";
+            if(document.getElementById('stat-total-spent')) document.getElementById('stat-total-spent').innerText = "0 đ";
+
             document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG TRỞ LẠI,"; 
             document.getElementById('welcome-name').innerText = "KHÁCH"; 
             document.getElementById('banner-login-btn').classList.remove('hidden'); 
@@ -628,7 +652,6 @@
             document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
         }
 
-        // Nạp Tiền
         function formatVND(n) { return new Intl.NumberFormat('vi-VN').format(n); }
         function updateSummaryDisplay(v) { if(!v) { document.getElementById('summary-amount').innerText = "0 đ"; document.getElementById('summary-total').innerText = "0 đ"; return; } const f = formatVND(v) + " đ"; document.getElementById('summary-amount').innerText = f; document.getElementById('summary-total').innerText = f; }
         function handleInputAmount(i) { document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); updateSummaryDisplay(i.value); }
@@ -679,9 +702,6 @@
             document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); 
         }
 
-        // ==========================================
-        // 6. CỘNG ĐỒNG (BÌNH LUẬN)
-        // ==========================================
         let mFile = null, mType = null, mURL = null;
         function handleMediaSelect(i) { if(i.files && i.files[0]) { mFile = i.files[0]; mType = mFile.type.startsWith('video/') ? 'video' : 'image'; mURL = URL.createObjectURL(mFile); const c = document.getElementById('media-preview-content'); c.innerHTML = mType === 'video' ? `<video src="${mURL}" controls class="h-40 object-cover"></video>` : `<img src="${mURL}" class="h-40 object-cover">`; document.getElementById('media-preview-container').classList.remove('hidden'); } }
         function clearMedia() { mFile = null; mType = null; mURL = null; document.getElementById('media-upload').value = ''; document.getElementById('media-preview-container').classList.add('hidden'); }
@@ -793,9 +813,6 @@
             }
         }
 
-        // ==========================================
-        // 7. VIỆC LÀM (ZALO & FIX NaN)
-        // ==========================================
         function openJobModal() { document.getElementById('job-modal').classList.remove('hidden'); } 
         function closeJobModal() { document.getElementById('job-modal').classList.add('hidden'); }
 
@@ -891,9 +908,6 @@
             switchTab('job-detail-tab'); 
         } 
 
-        // ==========================================
-        // 8. CHỢ TOOL TRẢ PHÍ (CHỐNG CRASH)
-        // ==========================================
         let currentPurchase = null; 
 
         async function loadPaidTools() {
