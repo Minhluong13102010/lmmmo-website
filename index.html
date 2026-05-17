@@ -439,8 +439,8 @@
     <script>
         // --- CHUỖI KẾT NỐI VỚI BACKEND RENDER ---
         const BACKEND_URL = 'https://api-lmmmo.onrender.com';
-        let balanceInterval; // Biến dùng để quét số dư tự động
-        let currentBalance = -1; // Biến bí mật để theo dõi ví nảy số
+        let balanceInterval; 
+        let currentBalance = -1; 
 
         // THUẬT TOÁN TỰ ĐỘNG BIẾN CHỮ THÀNH LINK CLICK ĐƯỢC
         function linkify(text) {
@@ -457,15 +457,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // THUẬT TOÁN SO SÁNH: Nếu tiền tự nhiên TĂNG LÊN => Bật bảng chúc mừng!
                     if (currentBalance !== -1 && data.balance > currentBalance) {
                         let addedAmount = data.balance - currentBalance;
                         document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
                         document.getElementById('deposit-success-modal').classList.remove('hidden');
                         document.getElementById('deposit-success-modal').classList.add('flex');
-                        backToDepositForm(); // Hủy mã QR, đóng form lại
+                        backToDepositForm(); 
                     }
-                    currentBalance = data.balance; // Lưu lại số dư hiện tại
+                    currentBalance = data.balance; 
 
                     const formatted = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
                     document.getElementById('balance-display').innerText = formatted;
@@ -541,7 +540,7 @@
             document.getElementById('profile-email').innerText = e || "Chưa có"; 
             document.getElementById('profile-avatar-letter').innerText = u.charAt(0); 
             localStorage.setItem('is_logged_in', 'true'); 
-            currentBalance = -1; // Đăng nhập mới thì reset biến theo dõi
+            currentBalance = -1; 
             fetchRealBalance(u);
             if(balanceInterval) clearInterval(balanceInterval);
             balanceInterval = setInterval(() => fetchRealBalance(u), 5000);
@@ -571,19 +570,16 @@
         function togglePinInput(cb) { document.getElementById('sec-new-input').disabled = cb.checked; }
         function handleSecuritySave() { const curr = document.getElementById('sec-current-pass').value, nData = document.getElementById('sec-new-input').value, isRm = document.getElementById('checkbox-remove-pin').checked, err = document.getElementById('sec-error'), u = JSON.parse(localStorage.getItem('lmmmo_user')); if(curr !== u.password) { err.innerText = "Mật khẩu hiện tại sai!"; err.classList.remove('hidden'); return; } if(secAction === 'password') { if(nData.length < 6) { err.innerText = "Mật khẩu quá ngắn!"; err.classList.remove('hidden'); return; } u.password = nData; showToast("Đã đổi mật khẩu!"); } else if (secAction === 'email') { if(!nData.includes('@')) { err.innerText = "Gmail không hợp lệ!"; err.classList.remove('hidden'); return; } u.email = nData; document.getElementById('profile-email').innerText = nData; showToast("Đã cập nhật Gmail!"); } else if (secAction === 'pin') { if(isRm) { delete u.pin; showToast("Đã xóa mã PIN!"); } else { if(!/^\d{4}$/.test(nData)) { err.innerText = "Mã PIN phải 4 số!"; err.classList.remove('hidden'); return; } u.pin = nData; showToast("Đã thiết lập mã PIN!"); } } localStorage.setItem('lmmmo_user', JSON.stringify(u)); closeSecurityModal(); checkPinStatus(); }
 
-        // 4. Lịch sử mua hàng
+        // 4. Lịch sử mua hàng (UPDATE: GỌI DATA MỚI MỖI KHI MỞ)
         function openHistoryModal() { 
-            getOrderHistory(); 
+            getOrderHistory(); // Load lại mới nhất
             document.getElementById('history-modal').classList.remove('hidden'); 
         } 
-        function closeHistoryModal() { 
-            document.getElementById('history-modal').classList.add('hidden'); 
-        }
+        function closeHistoryModal() { document.getElementById('history-modal').classList.add('hidden'); }
         
         async function getOrderHistory() {
-            const userObj = JSON.parse(localStorage.getItem('lmmmo_user'));
-            if (!userObj) return;
-            const u = userObj.username;
+            if(localStorage.getItem('is_logged_in') !== 'true') return;
+            const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             try {
                 let res = await fetch(`${BACKEND_URL}/history/?username=${u}`);
                 if(res.ok) {
@@ -600,7 +596,7 @@
                         });
                     } else { tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-gray-400 text-sm italic">Chưa có lịch sử mua hàng nào.</td></tr>'; }
                 }
-            } catch(e) { console.log(e); }
+            } catch(e) { console.log("Lỗi tải lịch sử:", e); }
         }
         
         function viewOrderDetails(t, n, d) { 
@@ -631,12 +627,11 @@
         function handleInputAmount(i) { document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); updateSummaryDisplay(i.value); }
         function setAmount(a, btn) { document.getElementById('custom-amount').value = a; document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); btn.classList.remove('border-gray-200', 'text-gray-600', 'bg-white'); btn.classList.add('border-primary-500', 'text-primary-600', 'bg-primary-50'); updateSummaryDisplay(a); }
         
-        let qrTimerInterval; // Khai báo biến đếm ngược
+        let qrTimerInterval; 
 
         function processDeposit() { 
             const a = document.getElementById('custom-amount').value; 
             
-            // XỬ LÝ ÉP MIN 20K
             if(!a || a < 20000) { showToast("Tối thiểu 20.000 VNĐ!", true); return; } 
             
             const u = JSON.parse(localStorage.getItem('lmmmo_user'));
@@ -651,8 +646,7 @@
             document.getElementById('deposit-input-area').classList.add('opacity-50', 'pointer-events-none'); 
             document.getElementById('deposit-method-area').classList.add('opacity-50', 'pointer-events-none'); 
             
-            // BẮT ĐẦU ĐẾM NGƯỢC 10 PHÚT
-            let timeLeft = 600; // 600 giây = 10 phút
+            let timeLeft = 600; 
             document.getElementById('qr-countdown').innerText = "10:00";
             if(qrTimerInterval) clearInterval(qrTimerInterval);
             qrTimerInterval = setInterval(() => {
@@ -661,10 +655,9 @@
                 let s = timeLeft % 60;
                 document.getElementById('qr-countdown').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
                 
-                // Nếu hết 10 phút -> Hủy lệnh nạp
                 if (timeLeft <= 0) {
                     clearInterval(qrTimerInterval);
-                    backToDepositForm(); // Đóng mã QR
+                    backToDepositForm(); 
                     showToast("Lệnh nạp đã hết hạn!", true);
                 }
             }, 1000);
@@ -673,7 +666,7 @@
         }
 
         function backToDepositForm() { 
-            if(qrTimerInterval) clearInterval(qrTimerInterval); // Xóa đồng hồ khi đóng
+            if(qrTimerInterval) clearInterval(qrTimerInterval); 
             document.getElementById('deposit-qr-view').classList.remove('flex'); 
             document.getElementById('deposit-qr-view').classList.add('hidden'); 
             document.getElementById('deposit-summary-view').classList.remove('hidden'); 
@@ -815,7 +808,6 @@
             let desc = decodeURIComponent(safeDesc);
             document.getElementById('detail-modal-title').innerText = name;
             
-            // Biến chữ có chứa "http" thành đường link xanh nước biển
             document.getElementById('detail-modal-desc').innerHTML = linkify(desc);
             
             document.getElementById('detail-modal-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " đ";
@@ -831,14 +823,11 @@
             document.getElementById('tool-detail-modal').classList.add('hidden');
         }
 
-        // BÍ KÍP KHÓA MỤC TIÊU: LƯU CHÍNH XÁC ID CỦA TOOL BỊ BẤM VÀO BIẾN currentPurchase
         function buyTool(toolId, toolName, price) {
             if (localStorage.getItem('is_logged_in') !== 'true') { 
                 showToast("Bạn cần đăng nhập để mua hàng!", true); 
                 return; 
             }
-            
-            // Dòng này đảm bảo 100% ID của tool đúng được gửi đi
             currentPurchase = { id: toolId, name: toolName, price: price };
             
             document.getElementById('confirm-tool-name').innerText = toolName;
@@ -848,11 +837,10 @@
 
         function closeConfirmModal() {
             document.getElementById('confirm-purchase-modal').classList.add('hidden');
-            // Xóa rác, nhưng chỉ xóa SAU KHI thuật toán Mua hàng đã copy xong dữ liệu
             currentPurchase = null;
         }
 
-        // THUẬT TOÁN ĐÃ ĐƯỢC VÁ LỖI JAVASCRIPT BẤT TỬ
+        // --- BẢN VÁ LỖI CHỐNG CRASH KHI MUA HÀNG TRỌN VẸN 100% ---
         async function executePurchase() {
             if (!currentPurchase) return;
             
@@ -861,34 +849,36 @@
             btn.innerText = "Đang xử lý...";
             btn.disabled = true;
 
-            // VÁ LỖI Ở ĐÂY: Lưu lại chính xác TÊN và ID tool trước khi bảng xác nhận bị đóng
+            // LƯU LẠI TÊN VÀ ID TOOL TRƯỚC KHI BIẾN BỊ XÓA DỌN
             const savedToolName = currentPurchase.name;
             const savedToolId = currentPurchase.id;
 
             try {
-                // Gửi ĐÚNG MÃ ID (savedToolId) lên Két sắt để Két sắt quét đúng sản phẩm
                 let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: savedToolId })
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ username: u, tool_id: savedToolId })
                 });
                 let data = await res.json();
                 
-                // Đóng bảng xác nhận (Lệnh closeConfirmModal này sẽ xóa biến currentPurchase về null)
-                closeConfirmModal();
+                closeConfirmModal(); // Hàm này chạy sẽ xóa biến currentPurchase = null
 
                 if (res.ok) {
                     showToast("Thanh toán thành công!");
                     let balanceEl = document.getElementById('balance-display');
                     if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
                     
-                    loadPaidTools(); // Tải lại chợ để cập nhật số lượng "Đã bán"
-                    getOrderHistory(); // Lệnh load lịch sử ngầm ở đây đảm bảo lịch sử luôn là mới nhất
+                    loadPaidTools();
+                    getOrderHistory(); 
                     
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
-                    // Gọi bảng trả link lên bằng tên Tool ĐÃ ĐƯỢC LƯU, vì currentPurchase lúc này đã bị xóa
+                    // Trả link dựa vào savedToolName an toàn thay vì currentPurchase.name
                     viewOrderDetails('tool', savedToolName, data.download_link);
-                } else { showToast("Lỗi: " + data.error, true); }
+                } else { 
+                    showToast("Lỗi: " + data.error, true); 
+                }
             } catch (e) { 
-                console.log("Bug JS:", e); // Báo lỗi ngầm cho dev
+                console.log("Bug JS:", e); // In lỗi ngầm ra màn hình F12 để theo dõi
                 closeConfirmModal();
                 showToast("Lỗi kết nối đến máy chủ Két sắt!", true); 
             } finally {
