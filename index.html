@@ -230,14 +230,12 @@
                     <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center font-bold text-gray-400 border border-gray-200 flex-shrink-0"><i class="fas fa-user"></i></div>
                     <div class="flex-1">
                         <input type="text" id="post-input" placeholder="Chia sẻ góc nhìn, thủ thuật MMO mới nhất của bạn..." class="w-full bg-gray-50 border border-gray-200 rounded-full px-6 py-3.5 outline-none hover:bg-gray-100 focus:bg-white focus:border-primary-300 transition cursor-pointer text-gray-700" onkeypress="if(event.key === 'Enter') createPost()">
-                        <div id="media-preview-container" class="hidden mt-4 relative w-max"><button onclick="clearMedia()" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center z-10 shadow-md hover:bg-red-600 transition"><i class="fas fa-times text-sm"></i></button><div id="media-preview-content" class="rounded-xl overflow-hidden border-2 border-gray-200 shadow-sm"></div></div>
                         <div id="script-input-container" class="hidden mt-4"><textarea id="script-input" rows="5" class="w-full bg-gray-900 text-green-400 font-mono text-sm p-4 rounded-xl outline-none border border-gray-700 shadow-inner" placeholder="// Dán Code / Script của bạn vào đây..."></textarea></div>
                     </div>
                 </div>
                 <div class="flex justify-between items-center mt-5 pt-4 border-t border-gray-100">
                     <div class="flex gap-6 pl-2">
-                        <input type="file" id="media-upload" accept="image/*,video/*" class="hidden" onchange="handleMediaSelect(this)">
-                        <button onclick="document.getElementById('media-upload').click()" class="text-gray-500 hover:text-green-600 font-bold flex items-center gap-2 transition bg-gray-50 hover:bg-green-50 px-4 py-2 rounded-xl"><i class="fas fa-image text-green-500 text-xl"></i> Ảnh/Video</button>
+                        <button onclick="showToast('Chức năng Đăng Ảnh / Video trong Cộng Đồng hiện chưa update, sẽ sớm ra mắt trong thời gian tới!', true)" class="text-gray-500 hover:text-green-600 font-bold flex items-center gap-2 transition bg-gray-50 hover:bg-green-50 px-4 py-2 rounded-xl"><i class="fas fa-image text-green-500 text-xl"></i> Ảnh/Video</button>
                         <button onclick="toggleScriptInput()" class="text-gray-500 hover:text-blue-600 font-bold flex items-center gap-2 transition bg-gray-50 hover:bg-blue-50 px-4 py-2 rounded-xl"><i class="fas fa-code text-blue-500 text-xl"></i> Script</button>
                     </div>
                     <button onclick="createPost()" class="bg-primary-600 text-white px-8 py-2.5 rounded-full font-bold hover:bg-primary-700 shadow-md transition">Đăng bài</button>
@@ -285,15 +283,14 @@
 
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-widest flex items-center gap-2"><i class="fas fa-history text-primary-500"></i> Lịch sử giao dịch</h3>
-                            <button class="text-primary-600 text-xs font-bold hover:underline uppercase tracking-wider">Tất cả</button>
+                            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-widest flex items-center gap-2"><i class="fas fa-history text-primary-500"></i> 5 Giao dịch gần nhất</h3>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
+                            <table class="w-full text-left border-collapse" id="deposit-history-table">
                                 <thead>
                                     <tr class="border-b-2 border-gray-100">
                                         <th class="pb-3 text-xs text-gray-400 font-bold uppercase tracking-wider">Thời gian</th>
-                                        <th class="pb-3 text-xs text-gray-400 font-bold uppercase tracking-wider">Mã giao dịch</th>
+                                        <th class="pb-3 text-xs text-gray-400 font-bold uppercase tracking-wider">Mã GD</th>
                                         <th class="pb-3 text-xs text-gray-400 font-bold uppercase tracking-wider">Số tiền</th>
                                         <th class="pb-3 text-xs text-gray-400 font-bold uppercase tracking-wider text-right">Trạng thái</th>
                                     </tr>
@@ -404,6 +401,11 @@
             <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-shopping-cart"></i></div>
             <h3 class="text-xl font-black text-gray-800 mb-2">Xác nhận thanh toán</h3>
             <p class="text-gray-500 text-sm mb-6">Bạn có chắc chắn muốn mua <strong id="confirm-tool-name" class="text-gray-800 block mt-1 text-lg"></strong> với giá <strong id="confirm-tool-price" class="text-primary-600 block mt-1 text-xl"></strong>?</p>
+            
+            <div id="pin-input-container" class="hidden mb-6 px-2">
+                <input type="password" id="confirm-pin-input" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-center tracking-widest text-xl font-black outline-none focus:border-primary-500 transition shadow-inner text-gray-700" placeholder="Nhập mã PIN (4 số)" maxlength="4">
+            </div>
+
             <div class="flex gap-3">
                 <button onclick="closeConfirmModal()" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Hủy bỏ</button>
                 <button onclick="executePurchase()" id="btn-execute-purchase" class="flex-1 bg-primary-600 text-white font-bold py-3 rounded-xl hover:bg-primary-700 shadow-md shadow-primary-200 transition">Xác nhận mua</button>
@@ -469,13 +471,15 @@
             });
         }
 
-        // BẮT CHUẨN DỮ LIỆU ĐỔ VỀ TỪ KÉT SẮT
         async function fetchRealBalance(username) {
             try {
                 const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`);
                 if (response.ok) {
                     const data = await response.json();
                     
+                    // LƯU TRẠNG THÁI MÃ PIN CỦA KHÁCH
+                    window.user_has_pin = data.has_pin; 
+
                     if (currentBalance !== -1 && data.balance > currentBalance) {
                         let addedAmount = data.balance - currentBalance;
                         document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
@@ -490,22 +494,39 @@
                     document.getElementById('stat-balance').innerText = formattedBal;
                     document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
                     
-                    // CẬP NHẬT CÁC CON SỐ THỐNG KÊ MỚI
                     if (data.total_deposit !== undefined) {
                         const fmtDep = new Intl.NumberFormat('vi-VN').format(data.total_deposit) + " đ";
                         const fmtSpent = new Intl.NumberFormat('vi-VN').format(data.total_spent) + " đ";
                         
-                        // Cập nhật Trang chủ
                         if(document.getElementById('stat-total-deposit')) document.getElementById('stat-total-deposit').innerText = fmtDep;
                         if(document.getElementById('stat-total-spent')) document.getElementById('stat-total-spent').innerText = fmtSpent;
 
-                        // Cập nhật Profile Cá Nhân
                         if(document.getElementById('profile-stat-deposit')) {
                             document.getElementById('profile-stat-bal').innerText = formattedBal.toUpperCase();
                             document.getElementById('profile-stat-deposit').innerText = fmtDep.toUpperCase();
                             document.getElementById('profile-stat-spent').innerText = fmtSpent.toUpperCase();
                             document.getElementById('profile-stat-orders').innerText = data.order_count + " ĐƠN";
-                            document.getElementById('profile-stat-profit').innerText = fmtDep.toUpperCase(); // Gắn tạm vào Lợi nhuận gộp cho ngầu
+                            document.getElementById('profile-stat-profit').innerText = fmtDep.toUpperCase(); 
+                        }
+                    }
+
+                    // ĐỔ LỊCH SỬ NẠP TIỀN RA BẢNG
+                    if (data.recent_deposits) {
+                        let depTbody = document.querySelector('#deposit-history-table tbody');
+                        if (depTbody) {
+                            depTbody.innerHTML = '';
+                            if (data.recent_deposits.length > 0) {
+                                data.recent_deposits.forEach((d, index) => {
+                                    depTbody.innerHTML += `<tr>
+                                        <td class="pb-3 text-sm text-gray-500 font-medium">${d.time}</td>
+                                        <td class="pb-3 text-sm font-mono text-gray-400">#DEP${index + 100}</td>
+                                        <td class="pb-3 text-sm font-bold text-green-600">+${new Intl.NumberFormat('vi-VN').format(d.amount)} đ</td>
+                                        <td class="pb-3 text-right"><span class="bg-green-50 text-green-600 px-2 py-1 rounded text-xs font-bold border border-green-200">Thành công</span></td>
+                                    </tr>`;
+                                });
+                            } else {
+                                depTbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-400 text-sm italic">Chưa có giao dịch nào.</td></tr>';
+                            }
                         }
                     }
                 }
@@ -585,11 +606,8 @@
             document.getElementById('balance-display').innerText = "0 đ"; 
             document.getElementById('stat-balance').innerText = "0 đ"; 
             document.getElementById('deposit-page-balance').innerText = "0"; 
-            
-            // XÓA TRẮNG SỐ LIỆU KHI ĐĂNG XUẤT
             if(document.getElementById('stat-total-deposit')) document.getElementById('stat-total-deposit').innerText = "0 đ";
             if(document.getElementById('stat-total-spent')) document.getElementById('stat-total-spent').innerText = "0 đ";
-
             document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG TRỞ LẠI,"; 
             document.getElementById('welcome-name').innerText = "KHÁCH"; 
             document.getElementById('banner-login-btn').classList.remove('hidden'); 
@@ -702,8 +720,6 @@
             document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); 
         }
 
-        let mFile = null, mType = null, mURL = null;
-        function handleMediaSelect(i) { if(i.files && i.files[0]) { mFile = i.files[0]; mType = mFile.type.startsWith('video/') ? 'video' : 'image'; mURL = URL.createObjectURL(mFile); const c = document.getElementById('media-preview-content'); c.innerHTML = mType === 'video' ? `<video src="${mURL}" controls class="h-40 object-cover"></video>` : `<img src="${mURL}" class="h-40 object-cover">`; document.getElementById('media-preview-container').classList.remove('hidden'); } }
         function clearMedia() { mFile = null; mType = null; mURL = null; document.getElementById('media-upload').value = ''; document.getElementById('media-preview-container').classList.add('hidden'); }
         function toggleScriptInput() { document.getElementById('script-input-container').classList.toggle('hidden'); }
 
@@ -960,6 +976,15 @@
             currentPurchase = { id: toolId, name: toolName, price: price };
             document.getElementById('confirm-tool-name').innerText = toolName;
             document.getElementById('confirm-tool-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " VNĐ";
+            
+            // XỬ LÝ ẨN/HIỆN Ô NHẬP MÃ PIN NẾU KHÁCH CÓ CÀI
+            if (window.user_has_pin) {
+                document.getElementById('pin-input-container').classList.remove('hidden');
+                document.getElementById('confirm-pin-input').value = '';
+            } else {
+                document.getElementById('pin-input-container').classList.add('hidden');
+            }
+
             document.getElementById('confirm-purchase-modal').classList.remove('hidden');
         }
 
@@ -971,6 +996,15 @@
         async function executePurchase() {
             if (!currentPurchase) return;
             
+            let enteredPin = "";
+            if (window.user_has_pin) {
+                enteredPin = document.getElementById('confirm-pin-input').value;
+                if (!enteredPin || enteredPin.length !== 4) {
+                    showToast("Vui lòng nhập đúng mã PIN 4 số!", true);
+                    return;
+                }
+            }
+
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             const btn = document.getElementById('btn-execute-purchase');
             btn.innerText = "Đang xử lý...";
@@ -983,13 +1017,12 @@
                 let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ username: u, tool_id: savedToolId })
+                    body: JSON.stringify({ username: u, tool_id: savedToolId, pin: enteredPin }) // Bắn cả PIN lên
                 });
                 let data = await res.json();
                 
-                closeConfirmModal();
-
                 if (res.ok) {
+                    closeConfirmModal();
                     showToast("Thanh toán thành công!");
                     let balanceEl = document.getElementById('balance-display');
                     if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
