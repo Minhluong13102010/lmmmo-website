@@ -235,7 +235,7 @@
                 </div>
                 <div class="flex justify-between items-center mt-5 pt-4 border-t border-gray-100">
                     <div class="flex gap-6 pl-2">
-                        <button onclick="showToast('Chức năng Đăng Ảnh / Video trong Cộng Đồng hiện chưa update, sẽ sớm ra mắt trong thời gian tới!', true)" class="text-gray-500 hover:text-green-600 font-bold flex items-center gap-2 transition bg-gray-50 hover:bg-green-50 px-4 py-2 rounded-xl"><i class="fas fa-image text-green-500 text-xl"></i> Ảnh/Video</button>
+                        <button onclick="showToast('Tính năng Đăng Ảnh/Video hiện chưa update, sẽ sớm ra mắt trong thời gian tới!', true)" class="text-gray-500 hover:text-green-600 font-bold flex items-center gap-2 transition bg-gray-50 hover:bg-green-50 px-4 py-2 rounded-xl"><i class="fas fa-image text-green-500 text-xl"></i> Ảnh/Video</button>
                         <button onclick="toggleScriptInput()" class="text-gray-500 hover:text-blue-600 font-bold flex items-center gap-2 transition bg-gray-50 hover:bg-blue-50 px-4 py-2 rounded-xl"><i class="fas fa-code text-blue-500 text-xl"></i> Script</button>
                     </div>
                     <button onclick="createPost()" class="bg-primary-600 text-white px-8 py-2.5 rounded-full font-bold hover:bg-primary-700 shadow-md transition">Đăng bài</button>
@@ -429,33 +429,17 @@
         </div>
     </div>
 
-    <div id="job-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col transform transition-transform">
-            <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center"><h2 class="text-2xl font-black text-gray-800">ĐĂNG TIN TUYỂN DỤNG</h2><button onclick="closeJobModal()" class="text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button></div>
-            <div class="p-8 overflow-y-auto space-y-6">
-                <div><label class="block text-sm font-bold text-gray-700 mb-2">Tiêu đề công việc <span class="text-red-500">*</span></label><input type="text" id="job-title" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Ví dụ: Cần tool crawl data Facebook..."></div>
-                <div><label class="block text-sm font-bold text-gray-700 mb-2">Yêu cầu & Mô tả chi tiết <span class="text-red-500">*</span></label><textarea id="job-desc" rows="5" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Mô tả công việc, ngôn ngữ lập trình, deadline..."></textarea></div>
-                <div><label class="block text-sm font-bold text-gray-700 mb-2">Link Zalo / Telegram liên hệ <span class="text-red-500">*</span></label><input type="text" id="job-zalo-link" class="w-full border border-primary-300 bg-green-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-600 transition" placeholder="Ví dụ: https://zalo.me/0123456789"></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div><label class="block text-sm font-bold text-gray-700 mb-2">Phân loại <span class="text-red-500">*</span></label><select id="job-category" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none bg-white focus:border-primary-500 cursor-pointer"><option value="">-- Lĩnh vực --</option><option value="Code Tool / Bot">Code Tool / Bot</option><option value="Thiết kế Web/Landing">Thiết kế Web/Landing</option><option value="Quản trị mxh">Quản trị Hệ thống/MXH</option><option value="Khác">Lĩnh vực khác</option></select></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-2">Hình thức trả lương</label><select id="job-budget-type" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none bg-white focus:border-primary-500 cursor-pointer"><option value="Khoán">Khoán trọn gói</option><option value="Theo ngày">Trả theo ngày</option><option value="Theo tháng">Trả theo tháng</option><option value="Thỏa thuận">Thỏa thuận trực tiếp</option></select></div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div><label class="block text-sm font-bold text-gray-700 mb-2">Ngân sách dự kiến (VNĐ)</label><input type="text" id="job-min-price" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 transition" placeholder="Từ (Tùy chọn - Nhập số)"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-2 opacity-0 hidden md:block">Max</label><input type="text" id="job-max-price" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 transition" placeholder="Đến cực đại (Tùy chọn - Nhập số)"></div>
-                </div>
-            </div>
-            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"><button onclick="closeJobModal()" class="px-6 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-200 hover:bg-gray-300 transition">Hủy bỏ</button><button onclick="submitJob()" class="px-8 py-3.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md shadow-primary-200 transition">ĐĂNG TUYỂN</button></div>
-        </div>
-    </div>
-
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative transform transition-all"><button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition"><i class="fas fa-times"></i></button><div class="p-10"><div class="text-center mb-8"><div class="w-16 h-16 bg-primary-600 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-primary-200"><i class="fas fa-shield-check"></i></div><h2 id="auth-title" class="text-2xl font-black text-gray-800 tracking-tight">Đăng nhập</h2></div>
+        
         <div id="login-form" class="block"><div class="space-y-4"><input type="text" id="login-identifier" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500" placeholder="Tên đăng nhập / Email"><div><input type="password" id="login-password" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500" placeholder="Mật khẩu"><div class="text-right mt-1"><button onclick="switchAuthView('forgot')" class="text-xs text-primary-600 font-bold hover:underline">Quên mật khẩu?</button></div></div><div id="login-error" class="text-red-500 text-sm hidden font-medium text-center bg-red-50 p-2 rounded-lg"></div><button onclick="handleLogin()" class="w-full bg-primary-600 text-white font-bold rounded-xl py-3.5 hover:bg-primary-700 shadow-md">Đăng nhập ngay</button></div><p class="text-center text-sm text-gray-500 mt-6 font-medium">Bạn là người mới? <button onclick="switchAuthView('register')" class="text-primary-600 font-bold hover:underline">Tạo tài khoản</button></p></div>
-        <div id="forgot-form" class="hidden">
-            <div id="forgot-step-1" class="space-y-4 block"><p class="text-sm text-gray-500 text-center mb-4 leading-relaxed">Nhập Email bạn đã đăng ký. Hệ thống sẽ gửi một mã xác nhận 6 số để đặt lại mật khẩu.</p><input type="email" id="forgot-email" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 text-center font-bold" placeholder="Nhập Email của bạn"><div id="forgot-error-1" class="text-red-500 text-xs hidden font-bold text-center"></div><button onclick="sendForgotCode()" class="w-full bg-gray-900 text-white font-bold rounded-xl py-3.5 hover:bg-black shadow-md">Nhận Mã Xác Nhận</button></div>
-            <div id="forgot-step-2" class="space-y-4 hidden"><p class="text-sm text-green-600 font-bold text-center mb-4 bg-green-50 p-2 rounded-lg">Đã gửi mã đến Email của bạn!</p><input type="text" id="forgot-code" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500 text-center font-black tracking-widest text-lg" placeholder="------" maxlength="6"><input type="password" id="forgot-new-pass" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Mật khẩu mới (Tối thiểu 6 ký tự)"><div id="forgot-error-2" class="text-red-500 text-xs hidden font-bold text-center"></div><button onclick="resetPassword()" class="w-full bg-primary-600 text-white font-bold rounded-xl py-3.5 hover:bg-primary-700 shadow-md">Đổi Mật Khẩu</button></div>
-            <p class="text-center text-sm text-gray-500 mt-6"><button onclick="switchAuthView('login')" class="text-gray-400 font-bold hover:text-gray-800"><i class="fas fa-arrow-left"></i> Quay lại đăng nhập</button></p>
+        
+        <div id="forgot-form" class="hidden text-center py-4">
+            <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 animate-pulse"><i class="fas fa-tools"></i></div>
+            <h3 class="text-xl font-black text-gray-800 mb-3">Tính Năng Đang Bảo Trì</h3>
+            <p class="text-sm text-gray-500 mb-6 leading-relaxed">Hệ thống khôi phục mật khẩu tự động qua Email đang trong quá trình nâng cấp.<br><br>Vui lòng liên hệ trực tiếp với <strong>Admin LMMMO</strong> qua Zalo/Telegram kèm theo Tên đăng nhập của bạn để được hỗ trợ cấp lại mật khẩu nhanh nhất nhé!</p>
+            <button onclick="switchAuthView('login')" class="w-full bg-primary-600 text-white font-bold rounded-xl py-3.5 hover:bg-primary-700 shadow-md transition"><i class="fas fa-arrow-left mr-2"></i>Quay lại Đăng nhập</button>
         </div>
+
         <div id="register-form" class="hidden"><div class="space-y-3"><input type="email" id="reg-email" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Địa chỉ Email"><input type="text" id="reg-username" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Tên hiển thị"><input type="password" id="reg-password" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Mật khẩu (Ít nhất 6 ký tự)"><input type="password" id="reg-confirm" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Xác nhận lại mật khẩu"><div id="reg-error" class="text-red-500 text-sm hidden font-medium text-center bg-red-50 p-2 rounded-lg"></div><button onclick="handleRegister()" class="w-full bg-gray-900 text-white font-bold rounded-xl py-3.5 hover:bg-black shadow-md mt-2">Đăng ký</button></div><p class="text-center text-sm text-gray-500 mt-5 font-medium">Đã có tài khoản? <button onclick="switchAuthView('login')" class="text-primary-600 font-bold hover:underline">Đăng nhập</button></p></div>
     </div></div></div>
 
@@ -466,9 +450,7 @@
 
         function linkify(text) {
             var urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, function(url) {
-                return '<a href="' + url + '" target="_blank" class="text-blue-600 font-bold hover:underline">' + url + '</a>';
-            });
+            return text.replace(urlRegex, function(url) { return '<a href="' + url + '" target="_blank" class="text-blue-600 font-bold hover:underline">' + url + '</a>'; });
         }
 
         async function fetchRealBalance(username) {
@@ -477,7 +459,6 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // LƯU TRẠNG THÁI MÃ PIN CỦA KHÁCH
                     window.user_has_pin = data.has_pin; 
 
                     if (currentBalance !== -1 && data.balance > currentBalance) {
@@ -510,7 +491,6 @@
                         }
                     }
 
-                    // ĐỔ LỊCH SỬ NẠP TIỀN RA BẢNG
                     if (data.recent_deposits) {
                         let depTbody = document.querySelector('#deposit-history-table tbody');
                         if (depTbody) {
@@ -524,27 +504,20 @@
                                         <td class="pb-3 text-right"><span class="bg-green-50 text-green-600 px-2 py-1 rounded text-xs font-bold border border-green-200">Thành công</span></td>
                                     </tr>`;
                                 });
-                            } else {
-                                depTbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-400 text-sm italic">Chưa có giao dịch nào.</td></tr>';
-                            }
+                            } else { depTbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-400 text-sm italic">Chưa có giao dịch nào.</td></tr>'; }
                         }
                     }
                 }
             } catch (error) { console.log("Đang chờ Backend phản hồi..."); }
         }
 
-        function closeDepositSuccessModal() {
-            document.getElementById('deposit-success-modal').classList.add('hidden');
-            document.getElementById('deposit-success-modal').classList.remove('flex');
-        }
-
+        function closeDepositSuccessModal() { document.getElementById('deposit-success-modal').classList.add('hidden'); document.getElementById('deposit-success-modal').classList.remove('flex'); }
         function showToast(msg, err = false) { const t = document.getElementById('toast-notification'), i = document.getElementById('toast-icon'); document.getElementById('toast-message').innerText = msg; if(err) { t.classList.replace('border-primary-500', 'border-red-500'); i.className = 'fas fa-exclamation text-red-600'; i.parentElement.classList.replace('bg-primary-100', 'bg-red-100'); } else { t.classList.replace('border-red-500', 'border-primary-500'); i.className = 'fas fa-check text-primary-600'; i.parentElement.classList.replace('bg-red-100', 'bg-primary-100'); } t.classList.remove('translate-x-[150%]', 'opacity-0'); setTimeout(() => { t.classList.add('translate-x-[150%]', 'opacity-0'); }, 3000); }
         function switchTab(tabId) { const l = document.getElementById('global-loader'); l.classList.remove('hidden'); l.classList.add('flex'); document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn text-gray-500 hover:text-primary-600 font-bold whitespace-nowrap pb-1 border-b-2 border-transparent uppercase text-sm tracking-wide transition'); let idx = {'home-tab':0, 'tool-free-tab':1, 'resource-tab':2, 'jobs-tab':3, 'job-detail-tab':3, 'social-tab':4}[tabId]; if(idx !== undefined) { const btn = document.querySelectorAll('.nav-btn')[idx]; btn.className = tabId === 'social-tab' ? 'nav-btn text-red-600 font-bold whitespace-nowrap pb-1 border-b-2 border-red-600 uppercase text-sm tracking-wide transition' : 'nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap pb-1 uppercase text-sm tracking-wide transition'; } setTimeout(() => { document.querySelectorAll('.tab-content').forEach(t => { t.classList.add('hidden'); t.classList.remove('block'); }); document.getElementById(tabId).classList.remove('hidden'); document.getElementById(tabId).classList.add('block'); window.scrollTo(0, 0); l.classList.add('hidden'); l.classList.remove('flex'); }, 400); }
-
         function toggleUserDropdown() { const d = document.getElementById('user-dropdown'); if(d.classList.contains('dropdown-hidden')) { d.classList.remove('dropdown-hidden'); d.classList.add('dropdown-visible'); } else { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } }
         document.addEventListener('click', function(e) { const b = document.getElementById('user-profile-btn'), d = document.getElementById('user-dropdown'); if (!b.contains(e.target) && d.classList.contains('dropdown-visible')) { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } });
         function toggleAuthModal(s) { document.getElementById('auth-modal').classList.toggle('hidden', !s); if(s) { switchAuthView('login'); document.getElementById('login-error').classList.add('hidden'); document.getElementById('reg-error').classList.add('hidden'); } }
-        function switchAuthView(v) { document.getElementById('login-form').classList.toggle('hidden', v !== 'login'); document.getElementById('register-form').classList.toggle('hidden', v !== 'register'); document.getElementById('forgot-form').classList.toggle('hidden', v !== 'forgot'); if(v === 'login') document.getElementById('auth-title').innerText = "Đăng nhập"; else if(v === 'register') document.getElementById('auth-title').innerText = "Tạo tài khoản"; else if(v === 'forgot') { document.getElementById('auth-title').innerText = "Khôi phục mật khẩu"; document.getElementById('forgot-step-1').classList.remove('hidden'); document.getElementById('forgot-step-2').classList.add('hidden'); } }
+        function switchAuthView(v) { document.getElementById('login-form').classList.toggle('hidden', v !== 'login'); document.getElementById('register-form').classList.toggle('hidden', v !== 'register'); document.getElementById('forgot-form').classList.toggle('hidden', v !== 'forgot'); if(v === 'login') document.getElementById('auth-title').innerText = "Đăng nhập"; else if(v === 'register') document.getElementById('auth-title').innerText = "Tạo tài khoản"; else if(v === 'forgot') { document.getElementById('auth-title').innerText = "Khôi phục mật khẩu"; } }
         
         async function handleRegister() {
             const e = document.getElementById('reg-email').value, u = document.getElementById('reg-username').value, p = document.getElementById('reg-password').value, c = document.getElementById('reg-confirm').value, box = document.getElementById('reg-error');
@@ -574,10 +547,6 @@
                 } else { box.innerText = "Sai tài khoản hoặc mật khẩu!"; box.classList.remove('hidden'); }
             } catch (error) { box.innerText = "Lỗi kết nối máy chủ!"; box.classList.remove('hidden'); } finally { btn.innerText = "Đăng nhập ngay"; }
         }      
-
-        let resetEmail = "";
-        function sendForgotCode() { const e = document.getElementById('forgot-email').value, u = JSON.parse(localStorage.getItem('lmmmo_user')), box = document.getElementById('forgot-error-1'); if(!e) { box.innerText = "Nhập Email!"; box.classList.remove('hidden'); return; } if(!u || u.email !== e) { box.innerText = "Email không tồn tại!"; box.classList.remove('hidden'); return; } resetEmail = e; box.classList.add('hidden'); document.getElementById('forgot-step-1').classList.add('hidden'); document.getElementById('forgot-step-2').classList.remove('hidden'); }
-        function resetPassword() { const c = document.getElementById('forgot-code').value, p = document.getElementById('forgot-new-pass').value, box = document.getElementById('forgot-error-2'); if(c.length !== 6) { box.innerText = "Mã gồm 6 số!"; box.classList.remove('hidden'); return; } if(p.length < 6) { box.innerText = "Mật khẩu > 6 ký tự!"; box.classList.remove('hidden'); return; } const u = JSON.parse(localStorage.getItem('lmmmo_user')); u.password = p; localStorage.setItem('lmmmo_user', JSON.stringify(u)); showToast("Đổi mật khẩu thành công!"); switchAuthView('login'); }
 
         function updateUIForLoggedInUser(u, e) { 
             document.getElementById('btn-show-login').classList.add('hidden'); 
@@ -649,9 +618,7 @@
         }
         
         function viewOrderDetails(t, n, d) { 
-            if(document.getElementById('order-detail-title').innerText !== "GIAO DỊCH THÀNH CÔNG") {
-                document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
-            }
+            if(document.getElementById('order-detail-title').innerText !== "GIAO DỊCH THÀNH CÔNG") { document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng"; }
             document.getElementById('order-item-name').innerText = n; 
             if (t === 'tool') {
                 document.getElementById('order-type-tool').classList.remove('hidden'); 
@@ -665,10 +632,7 @@
             }
             document.getElementById('order-detail-modal').classList.remove('hidden'); 
         }
-        function closeOrderDetailModal() { 
-            document.getElementById('order-detail-modal').classList.add('hidden'); 
-            document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng";
-        }
+        function closeOrderDetailModal() { document.getElementById('order-detail-modal').classList.add('hidden'); document.getElementById('order-detail-title').innerText = "Chi Tiết Mặt Hàng"; }
 
         function formatVND(n) { return new Intl.NumberFormat('vi-VN').format(n); }
         function updateSummaryDisplay(v) { if(!v) { document.getElementById('summary-amount').innerText = "0 đ"; document.getElementById('summary-total').innerText = "0 đ"; return; } const f = formatVND(v) + " đ"; document.getElementById('summary-amount').innerText = f; document.getElementById('summary-total').innerText = f; }
@@ -676,7 +640,6 @@
         function setAmount(a, btn) { document.getElementById('custom-amount').value = a; document.querySelectorAll('.preset-btn').forEach(b => { b.classList.remove('border-primary-500', 'text-primary-600', 'bg-primary-50'); b.classList.add('border-gray-200', 'text-gray-600', 'bg-white'); }); btn.classList.remove('border-gray-200', 'text-gray-600', 'bg-white'); btn.classList.add('border-primary-500', 'text-primary-600', 'bg-primary-50'); updateSummaryDisplay(a); }
         
         let qrTimerInterval; 
-
         function processDeposit() { 
             const a = document.getElementById('custom-amount').value; 
             if(!a || a < 20000) { showToast("Tối thiểu 20.000 VNĐ!", true); return; } 
@@ -701,12 +664,7 @@
                 let m = Math.floor(timeLeft / 60);
                 let s = timeLeft % 60;
                 document.getElementById('qr-countdown').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(qrTimerInterval);
-                    backToDepositForm(); 
-                    showToast("Lệnh nạp đã hết hạn!", true);
-                }
+                if (timeLeft <= 0) { clearInterval(qrTimerInterval); backToDepositForm(); showToast("Lệnh nạp đã hết hạn!", true); }
             }, 1000);
             showToast("Đã tạo lệnh nạp tự động!"); 
         }
@@ -720,7 +678,6 @@
             document.getElementById('deposit-method-area').classList.remove('opacity-50', 'pointer-events-none'); 
         }
 
-        function clearMedia() { mFile = null; mType = null; mURL = null; document.getElementById('media-upload').value = ''; document.getElementById('media-preview-container').classList.add('hidden'); }
         function toggleScriptInput() { document.getElementById('script-input-container').classList.toggle('hidden'); }
 
         async function loadCommunityPosts() {
@@ -733,7 +690,6 @@
                     document.getElementById('empty-feed-msg').style.display = 'none';
                     data.posts.forEach(p => {
                         let badge = p.is_pinned ? `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-1 rounded ml-2 border border-red-100"><i class="fas fa-thumbtack"></i> ĐÃ GHIM</span>` : '';
-                        
                         let commentsHtml = '<div class="mt-4 border-t border-gray-100 pt-4 space-y-3">';
                         if (p.comments && p.comments.length > 0) {
                             p.comments.forEach(c => {
@@ -783,50 +739,29 @@
             let finalContent = txt; if (scr) finalContent += `\n\n[Script/Code]:\n${scr}`;
             if(!finalContent) { showToast("Vui lòng nhập nội dung!", true); return; } 
             
-            if (localStorage.getItem('is_logged_in') !== 'true') { 
-                showToast("Bạn cần đăng nhập để đăng bài!", true); 
-                return; 
-            }
+            if (localStorage.getItem('is_logged_in') !== 'true') { showToast("Bạn cần đăng nhập để đăng bài!", true); return; }
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             try {
-                let res = await fetch(`${BACKEND_URL}/community/`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: u, content: finalContent})
-                });
+                let res = await fetch(`${BACKEND_URL}/community/`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: u, content: finalContent}) });
                 if(res.ok) {
                     document.getElementById('post-input').value = ''; 
                     if(document.getElementById('script-input')) document.getElementById('script-input').value = ''; 
                     document.getElementById('script-input-container').classList.add('hidden'); 
-                    clearMedia(); showToast("Đăng bài thành công!"); loadCommunityPosts(); 
+                    showToast("Đăng bài thành công!"); loadCommunityPosts(); 
                 }
             } catch(e) { showToast("Lỗi máy chủ!", true); }
         }
 
         async function submitComment(postId) {
-            if (localStorage.getItem('is_logged_in') !== 'true') {
-                showToast("Bạn cần đăng nhập để bình luận!", true);
-                return;
-            }
+            if (localStorage.getItem('is_logged_in') !== 'true') { showToast("Bạn cần đăng nhập để bình luận!", true); return; }
             const inputEl = document.getElementById(`comment-input-${postId}`);
             const content = inputEl.value.trim();
             if(!content) return;
-
             const author = JSON.parse(localStorage.getItem('lmmmo_user')).username;
-
             try {
-                let res = await fetch(`${BACKEND_URL}/add-comment/`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ post_id: postId, author: author, content: content })
-                });
-                if(res.ok) {
-                    inputEl.value = '';
-                    loadCommunityPosts(); 
-                } else {
-                    showToast("Lỗi khi gửi bình luận!", true);
-                }
-            } catch(e) {
-                showToast("Lỗi kết nối!", true);
-            }
+                let res = await fetch(`${BACKEND_URL}/add-comment/`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ post_id: postId, author: author, content: content }) });
+                if(res.ok) { inputEl.value = ''; loadCommunityPosts(); } else { showToast("Lỗi khi gửi bình luận!", true); }
+            } catch(e) { showToast("Lỗi kết nối!", true); }
         }
 
         function openJobModal() { document.getElementById('job-modal').classList.remove('hidden'); } 
@@ -841,14 +776,10 @@
                     document.getElementById('empty-job-msg').style.display = 'none';
                     data.jobs.forEach(j => {
                         let badge = j.is_pinned ? `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-3 py-1 rounded-full border border-red-200 mr-2 shadow-sm"><i class="fas fa-thumbtack"></i> ĐÃ GHIM</span>` : '';
-                        
                         let actualDesc = j.description || "";
                         let zaloLink = "";
                         let match = actualDesc.match(/\[ZALO\](.*?)\[\/ZALO\]/);
-                        if(match) {
-                            zaloLink = match[1];
-                            actualDesc = actualDesc.replace(match[0], '').trim(); 
-                        }
+                        if(match) { zaloLink = match[1]; actualDesc = actualDesc.replace(match[0], '').trim(); }
                         let safeDesc = encodeURIComponent(actualDesc);
 
                         let html = `
@@ -874,35 +805,19 @@
             const c = document.getElementById('job-category').value;
             const bt = document.getElementById('job-budget-type').value;
             const z = document.getElementById('job-zalo-link').value.trim();
-            
             let rawMin = document.getElementById('job-min-price').value.replace(/\D/g, ''); 
             let rawMax = document.getElementById('job-max-price').value.replace(/\D/g, '');
-            let min = rawMin ? parseInt(rawMin) : 0;
-            let max = rawMax ? parseInt(rawMax) : 0;
+            let min = rawMin ? parseInt(rawMin) : 0; let max = rawMax ? parseInt(rawMax) : 0;
 
             if(!t || !d || !c || !z) return showToast("Nhập đủ thông tin có dấu (*)", true); 
             
             let txt = bt + ": Thỏa thuận"; 
-            if(min > 0 && max > 0) { txt = `${bt}: ${formatVND(min)} - ${formatVND(max)} Đ`; } 
-            else if(min > 0) { txt = `${bt}: Từ ${formatVND(min)} Đ`; }
-            
+            if(min > 0 && max > 0) { txt = `${bt}: ${formatVND(min)} - ${formatVND(max)} Đ`; } else if(min > 0) { txt = `${bt}: Từ ${formatVND(min)} Đ`; }
             const finalDesc = d + "\n\n[ZALO]" + z + "[/ZALO]";
-
             const a = localStorage.getItem('is_logged_in') === 'true' ? JSON.parse(localStorage.getItem('lmmmo_user')).username : "Khách"; 
             try {
-                let res = await fetch(`${BACKEND_URL}/jobs/`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: a, title: t, description: finalDesc, category: c, budget_info: txt})
-                });
-                if(res.ok) { 
-                    closeJobModal(); 
-                    showToast("Đăng tin tuyển dụng thành công!"); 
-                    document.getElementById('job-title').value = ''; 
-                    document.getElementById('job-desc').value = ''; 
-                    document.getElementById('job-zalo-link').value = ''; 
-                    document.getElementById('job-min-price').value = ''; 
-                    document.getElementById('job-max-price').value = ''; 
-                    loadJobs(); 
-                }
+                let res = await fetch(`${BACKEND_URL}/jobs/`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({author: a, title: t, description: finalDesc, category: c, budget_info: txt}) });
+                if(res.ok) { closeJobModal(); showToast("Đăng tin tuyển dụng thành công!"); document.getElementById('job-title').value = ''; document.getElementById('job-desc').value = ''; document.getElementById('job-zalo-link').value = ''; document.getElementById('job-min-price').value = ''; document.getElementById('job-max-price').value = ''; loadJobs(); }
             } catch(e) { showToast("Lỗi máy chủ!", true); }
         } 
         
@@ -911,16 +826,8 @@
             document.getElementById('job-detail-budget').innerText = "Ngân sách: " + b; 
             document.getElementById('job-detail-desc').innerText = decodeURIComponent(safeDesc); 
             document.getElementById('job-detail-author').innerText = a; 
-            
             let btn = document.getElementById('btn-apply-job');
-            btn.onclick = function() {
-                if(z) {
-                    window.open(z, '_blank'); 
-                } else {
-                    alert(`Vui lòng copy tên người đăng [ ${a} ] và tìm kiếm trong nhóm Cộng Đồng Zalo của LMMMO để trao đổi trực tiếp!`);
-                }
-            };
-            
+            btn.onclick = function() { if(z) { window.open(z, '_blank'); } else { alert(`Vui lòng copy tên người đăng [ ${a} ] và tìm kiếm trong nhóm Cộng Đồng Zalo của LMMMO để trao đổi trực tiếp!`); } };
             switchTab('job-detail-tab'); 
         } 
 
@@ -935,7 +842,6 @@
                     let html = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
                     data.tools.forEach(t => {
                         let safeDesc = encodeURIComponent(t.description || '');
-
                         html += `
                         <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', ${t.price}, '${safeDesc}')">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">${t.name}</h3>
@@ -957,104 +863,65 @@
             document.getElementById('detail-modal-title').innerText = name;
             document.getElementById('detail-modal-desc').innerHTML = linkify(desc);
             document.getElementById('detail-modal-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " đ";
-            document.getElementById('detail-modal-buy-btn').onclick = function() {
-                closeToolDetailModal();
-                buyTool(id, name, price);
-            };
+            document.getElementById('detail-modal-buy-btn').onclick = function() { closeToolDetailModal(); buyTool(id, name, price); };
             document.getElementById('tool-detail-modal').classList.remove('hidden');
         }
 
-        function closeToolDetailModal() {
-            document.getElementById('tool-detail-modal').classList.add('hidden');
-        }
+        function closeToolDetailModal() { document.getElementById('tool-detail-modal').classList.add('hidden'); }
 
         function buyTool(toolId, toolName, price) {
-            if (localStorage.getItem('is_logged_in') !== 'true') { 
-                showToast("Bạn cần đăng nhập để mua hàng!", true); 
-                return; 
-            }
+            if (localStorage.getItem('is_logged_in') !== 'true') { showToast("Bạn cần đăng nhập để mua hàng!", true); return; }
             currentPurchase = { id: toolId, name: toolName, price: price };
             document.getElementById('confirm-tool-name').innerText = toolName;
             document.getElementById('confirm-tool-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " VNĐ";
             
-            // XỬ LÝ ẨN/HIỆN Ô NHẬP MÃ PIN NẾU KHÁCH CÓ CÀI
+            // XỬ LÝ MÃ PIN GIAO DỊCH
             if (window.user_has_pin) {
                 document.getElementById('pin-input-container').classList.remove('hidden');
                 document.getElementById('confirm-pin-input').value = '';
             } else {
                 document.getElementById('pin-input-container').classList.add('hidden');
             }
-
             document.getElementById('confirm-purchase-modal').classList.remove('hidden');
         }
 
-        function closeConfirmModal() {
-            document.getElementById('confirm-purchase-modal').classList.add('hidden');
-            currentPurchase = null;
-        }
+        function closeConfirmModal() { document.getElementById('confirm-purchase-modal').classList.add('hidden'); currentPurchase = null; }
 
         async function executePurchase() {
             if (!currentPurchase) return;
-            
             let enteredPin = "";
             if (window.user_has_pin) {
                 enteredPin = document.getElementById('confirm-pin-input').value;
-                if (!enteredPin || enteredPin.length !== 4) {
-                    showToast("Vui lòng nhập đúng mã PIN 4 số!", true);
-                    return;
-                }
+                if (!enteredPin || enteredPin.length !== 4) { showToast("Vui lòng nhập đúng mã PIN 4 số!", true); return; }
             }
-
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             const btn = document.getElementById('btn-execute-purchase');
-            btn.innerText = "Đang xử lý...";
-            btn.disabled = true;
+            btn.innerText = "Đang xử lý..."; btn.disabled = true;
 
-            const savedToolName = currentPurchase.name;
-            const savedToolId = currentPurchase.id;
-
+            const savedToolName = currentPurchase.name; const savedToolId = currentPurchase.id;
             try {
                 let res = await fetch(`${BACKEND_URL}/buy-tool/`, {
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ username: u, tool_id: savedToolId, pin: enteredPin }) // Bắn cả PIN lên
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username: u, tool_id: savedToolId, pin: enteredPin }) 
                 });
                 let data = await res.json();
                 
                 if (res.ok) {
-                    closeConfirmModal();
-                    showToast("Thanh toán thành công!");
+                    closeConfirmModal(); showToast("Thanh toán thành công!");
                     let balanceEl = document.getElementById('balance-display');
                     if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
-                    
-                    loadPaidTools();
-                    getOrderHistory(); 
-                    
+                    loadPaidTools(); getOrderHistory(); 
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
                     viewOrderDetails('tool', savedToolName, data.download_link);
-                } else { 
-                    showToast("Lỗi: " + data.error, true); 
-                }
-            } catch (e) { 
-                console.log("Bug JS:", e);
-                closeConfirmModal();
-                showToast("Lỗi kết nối đến máy chủ Két sắt!", true); 
-            } finally {
-                btn.innerText = "Xác nhận mua";
-                btn.disabled = false;
-            }
+                } else { showToast("Lỗi: " + data.error, true); }
+            } catch (e) { console.log("Bug JS:", e); closeConfirmModal(); showToast("Lỗi kết nối đến máy chủ Két sắt!", true); } finally { btn.innerText = "Xác nhận mua"; btn.disabled = false; }
         }
 
         window.onload = function() { 
             if(localStorage.getItem('is_logged_in') === 'true') { 
                 const u = JSON.parse(localStorage.getItem('lmmmo_user')); 
-                if(u) updateUIForLoggedInUser(u.username, u.email); 
-                checkPinStatus(); 
-                getOrderHistory();
+                if(u) updateUIForLoggedInUser(u.username, u.email); checkPinStatus(); getOrderHistory();
             } 
-            loadCommunityPosts();
-            loadJobs();
-            loadPaidTools(); 
+            loadCommunityPosts(); loadJobs(); loadPaidTools(); 
         }
     </script>
 </body>
