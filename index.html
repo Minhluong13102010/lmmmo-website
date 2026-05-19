@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LMMMO - Make Money Online Tools</title>
+    <title>LMMMO - Tổng Kho Công Cụ MMO</title>
     <meta name="description" content="LMMMO - Nền tảng cung cấp bộ công cụ MMO chuyên nghiệp. Kho phần mềm tự động hóa đa dạng từ miễn phí đến cao cấp, giúp bạn tối ưu quy trình và bứt phá doanh thu." />
     <meta name="keywords" content="LMMMO, tool mmo, phần mềm mmo, tool tự động hóa, tool free, tài nguyên mmo" />
     
@@ -18,7 +18,7 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
-        #user-dropdown { transform-origin: top right; transition: all 0.2s ease-out; }
+        #user-dropdown, #support-menu { transform-origin: bottom right; transition: all 0.2s ease-out; }
         .dropdown-hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
         .dropdown-visible { opacity: 1; transform: scale(1); pointer-events: auto; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -36,13 +36,59 @@
         <span id="toast-message" class="font-bold text-gray-800 text-sm">Thành công!</span>
     </div>
 
+    <div class="fixed bottom-6 right-6 z-[150] flex flex-col items-end">
+        <div id="support-menu" class="dropdown-hidden mb-4 bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden w-72">
+            <div class="bg-gradient-to-r from-primary-600 to-primary-500 p-5 text-white flex justify-between items-center shadow-inner">
+                <div>
+                    <h4 class="font-black text-lg uppercase tracking-wider">LMMMO HỖ TRỢ</h4>
+                    <p class="text-xs opacity-90 mt-1"><span class="w-2 h-2 inline-block bg-green-300 rounded-full animate-pulse mr-1"></span>Online 24/7</p>
+                </div>
+                <button onclick="toggleSupportMenu()" class="text-white/80 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-3 flex flex-col gap-1">
+                <a href="https://zalo.me/0967220231" target="_blank" class="flex items-center gap-4 p-3 hover:bg-blue-50 rounded-2xl transition group border border-transparent hover:border-blue-100">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition shadow-sm"><i class="fas fa-user-tie"></i></div>
+                    <div><p class="font-black text-gray-800 text-sm">Chat Zalo Admin</p><p class="text-xs text-gray-500 font-medium mt-0.5">Lương Minh - Lmmmo</p></div>
+                </a>
+                
+                <a href="LINK_NHOM_ZALO_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-green-50 rounded-2xl transition group border border-transparent hover:border-green-100">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-green-600 group-hover:text-white transition shadow-sm"><i class="fas fa-users"></i></div>
+                    <div><p class="font-black text-gray-800 text-sm">Nhóm Thông Báo Zalo</p><p class="text-xs text-gray-500 font-medium mt-0.5">Nhận Tuts & Giao lưu</p></div>
+                </a>
+                
+                <div class="h-px bg-gray-100 my-1 mx-2"></div>
+                
+                <a href="https://youtube.com/@lmmmo-v7l?si=dNYlQSfV_y0CljQC" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
+                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-red-600 group-hover:text-white transition shadow-sm"><i class="fab fa-youtube"></i></div>
+                    <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LBMDEV - Review Tool</p></div>
+                </a>
+                
+                <a href="https://www.tiktok.com/@lmmmostore?_r=1&_t=ZS-96UA4e4pCTs" target="_blank" class="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-2xl transition group border border-transparent hover:border-gray-300">
+                    <div class="w-12 h-12 bg-gray-200 text-gray-800 rounded-xl flex items-center justify-center text-2xl group-hover:bg-black group-hover:text-white transition shadow-sm"><i class="fab fa-tiktok"></i></div>
+                    <div><p class="font-black text-gray-800 text-sm">Kênh TikTok</p><p class="text-xs text-gray-500 font-medium mt-0.5">LBMDEV - Live & Tuts</p></div>
+                </a>
+            </div>
+        </div>
+
+        <button onclick="toggleSupportMenu()" class="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center text-3xl shadow-xl shadow-primary-300 hover:bg-primary-700 hover:scale-110 transition-all duration-300 animate-bounce relative border-2 border-white">
+            <span class="absolute -top-1 -right-1 flex h-5 w-5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-[10px] font-bold items-center justify-center shadow-sm">1</span>
+            </span>
+            <i class="fas fa-headset"></i>
+        </button>
+    </div>
     <nav class="bg-white shadow-sm fixed w-full top-0 z-[100]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20 relative">
+                
                 <div class="flex items-center gap-3 cursor-pointer flex-shrink-0" onclick="switchTab('home-tab')">
-                    <div class="bg-primary-600 p-2.5 rounded-xl text-white shadow-md shadow-primary-200"><i class="fas fa-cog text-xl"></i></div>
+                    <div class="w-11 h-11 bg-white rounded-xl shadow-md shadow-primary-100 flex items-center justify-center overflow-hidden border border-gray-100">
+                        <img src="./logo.png" alt="LMMMO Logo" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=L&background=16a34a&color=fff&rounded=true&bold=true'">
+                    </div>
                     <span class="text-2xl font-black text-primary-700 hidden md:block tracking-tight">LMMMO</span>
                 </div>
+
                 <div class="flex space-x-2 md:space-x-8 items-center flex-shrink-0 ml-4 overflow-x-auto hide-scrollbar">
                     <button onclick="switchTab('home-tab')" class="nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap pb-1 uppercase text-sm tracking-wide">Trang chủ</button>
                     <button onclick="switchTab('tool-free-tab')" class="nav-btn text-gray-500 hover:text-primary-600 font-bold whitespace-nowrap pb-1 border-b-2 border-transparent uppercase text-sm tracking-wide transition">Tool Free</button>
@@ -515,7 +561,11 @@
         function showToast(msg, err = false) { const t = document.getElementById('toast-notification'), i = document.getElementById('toast-icon'); document.getElementById('toast-message').innerText = msg; if(err) { t.classList.replace('border-primary-500', 'border-red-500'); i.className = 'fas fa-exclamation text-red-600'; i.parentElement.classList.replace('bg-primary-100', 'bg-red-100'); } else { t.classList.replace('border-red-500', 'border-primary-500'); i.className = 'fas fa-check text-primary-600'; i.parentElement.classList.replace('bg-red-100', 'bg-primary-100'); } t.classList.remove('translate-x-[150%]', 'opacity-0'); setTimeout(() => { t.classList.add('translate-x-[150%]', 'opacity-0'); }, 3000); }
         function switchTab(tabId) { const l = document.getElementById('global-loader'); l.classList.remove('hidden'); l.classList.add('flex'); document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn text-gray-500 hover:text-primary-600 font-bold whitespace-nowrap pb-1 border-b-2 border-transparent uppercase text-sm tracking-wide transition'); let idx = {'home-tab':0, 'tool-free-tab':1, 'resource-tab':2, 'jobs-tab':3, 'job-detail-tab':3, 'social-tab':4}[tabId]; if(idx !== undefined) { const btn = document.querySelectorAll('.nav-btn')[idx]; btn.className = tabId === 'social-tab' ? 'nav-btn text-red-600 font-bold whitespace-nowrap pb-1 border-b-2 border-red-600 uppercase text-sm tracking-wide transition' : 'nav-btn text-primary-600 font-bold border-b-2 border-primary-600 whitespace-nowrap pb-1 uppercase text-sm tracking-wide transition'; } setTimeout(() => { document.querySelectorAll('.tab-content').forEach(t => { t.classList.add('hidden'); t.classList.remove('block'); }); document.getElementById(tabId).classList.remove('hidden'); document.getElementById(tabId).classList.add('block'); window.scrollTo(0, 0); l.classList.add('hidden'); l.classList.remove('flex'); }, 400); }
         function toggleUserDropdown() { const d = document.getElementById('user-dropdown'); if(d.classList.contains('dropdown-hidden')) { d.classList.remove('dropdown-hidden'); d.classList.add('dropdown-visible'); } else { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } }
-        document.addEventListener('click', function(e) { const b = document.getElementById('user-profile-btn'), d = document.getElementById('user-dropdown'); if (!b.contains(e.target) && d.classList.contains('dropdown-visible')) { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } });
+        function toggleSupportMenu() { const m = document.getElementById('support-menu'); if(m.classList.contains('dropdown-hidden')) { m.classList.remove('dropdown-hidden'); m.classList.add('dropdown-visible'); } else { m.classList.add('dropdown-hidden'); m.classList.remove('dropdown-visible'); } }
+        document.addEventListener('click', function(e) { 
+            const b = document.getElementById('user-profile-btn'), d = document.getElementById('user-dropdown'); 
+            if (!b.contains(e.target) && d.classList.contains('dropdown-visible')) { d.classList.add('dropdown-hidden'); d.classList.remove('dropdown-visible'); } 
+        });
         function toggleAuthModal(s) { document.getElementById('auth-modal').classList.toggle('hidden', !s); if(s) { switchAuthView('login'); document.getElementById('login-error').classList.add('hidden'); document.getElementById('reg-error').classList.add('hidden'); } }
         function switchAuthView(v) { document.getElementById('login-form').classList.toggle('hidden', v !== 'login'); document.getElementById('register-form').classList.toggle('hidden', v !== 'register'); document.getElementById('forgot-form').classList.toggle('hidden', v !== 'forgot'); if(v === 'login') document.getElementById('auth-title').innerText = "Đăng nhập"; else if(v === 'register') document.getElementById('auth-title').innerText = "Tạo tài khoản"; else if(v === 'forgot') { document.getElementById('auth-title').innerText = "Khôi phục mật khẩu"; } }
         
@@ -882,7 +932,7 @@
             } else {
                 document.getElementById('pin-input-container').classList.add('hidden');
             }
-            document.getElementById('confirm-purchase-modal').classList.remove('hidden');
+            document.getElementById('confirm-purchase-modal').remove('hidden');
         }
 
         function closeConfirmModal() { document.getElementById('confirm-purchase-modal').classList.add('hidden'); currentPurchase = null; }
