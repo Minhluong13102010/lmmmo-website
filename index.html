@@ -490,7 +490,7 @@
     </div></div></div>
 
     <script>
-        const BACKEND_URL = 'https://api-lmmmo.onrender.com';
+        const BACKEND_URL = 'https://api-lmmmo.onrender.com/api';
         let balanceInterval; 
         let currentBalance = -1; 
 
@@ -883,14 +883,60 @@
 
         let currentPurchase = null; 
 
+        // ==========================================
+        // TOOL FREE: LẤY TOOL CÓ GIÁ = 0 Đ TỪ ADMIN
+        // ==========================================
+        async function loadFreeTools() {
+            try {
+                // Mượn luôn API của Chợ Tool Trả Phí
+                let res = await fetch(`${BACKEND_URL}/paid-tools/`);
+                let data = await res.json();
+                
+                let list = document.getElementById('free-tool-list');
+                list.innerHTML = ''; 
+                
+                // Lọc ma thuật: Chỉ lấy những Tool Sếp đặt giá = 0 trên Admin
+                let freeTools = data.tools ? data.tools.filter(t => t.price === 0 || t.price === "0") : [];
+                
+                if (freeTools.length > 0) {
+                    document.getElementById('empty-free-tool-msg').style.display = 'none';
+                    freeTools.forEach(t => {
+                        let safeDesc = encodeURIComponent(t.description || '');
+                        let html = `
+                        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl hover:border-green-300 transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', 0, '${safeDesc}')">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="font-bold text-xl text-gray-800 line-clamp-1">${t.name}</h3>
+                                <span class="bg-green-100 text-green-600 text-[10px] font-black px-2 py-1 rounded uppercase animate-pulse shrink-0 border border-green-200">FREE</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-4 font-bold"><i class="fas fa-download text-primary-500"></i> Lượt tải: ${t.sold_count}</p>
+                            <p class="text-gray-600 text-sm mb-6 leading-relaxed flex-1 line-clamp-3">${t.description}</p>
+                            
+                            <button onclick="event.stopPropagation(); buyTool(${t.id}, '${t.name}', 0)" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex justify-center items-center gap-2">
+                                <i class="fas fa-link"></i> LẤY LINK TẢI BẢN FREE
+                            </button>
+                        </div>`;
+                        list.insertAdjacentHTML('beforeend', html);
+                    });
+                } else {
+                    document.getElementById('empty-free-tool-msg').style.display = 'block';
+                }
+            } catch (e) {
+                console.log("Lỗi tải Free Tool:", e);
+            }
+        }
+
         async function loadPaidTools() {
             try {
                 let res = await fetch(`${BACKEND_URL}/paid-tools/`);
                 let data = await res.json();
                 let shop = document.getElementById('resource-tab'); 
-                if (data.tools && data.tools.length > 0) {
+                
+                // Lọc: Chỉ lấy Tool có giá > 0 hiển thị ở Chợ
+                let paidTools = data.tools ? data.tools.filter(t => t.price > 0) : [];
+
+                if (paidTools.length > 0) {
                     let html = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
-                    data.tools.forEach(t => {
+                    paidTools.forEach(t => {
                         let safeDesc = encodeURIComponent(t.description || '');
                         html += `
                         <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', ${t.price}, '${safeDesc}')">
@@ -904,6 +950,8 @@
                     });
                     html += `</div>`;
                     shop.innerHTML = html;
+                } else {
+                    shop.innerHTML = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="text-center text-gray-400 mt-16"><i class="fas fa-box-open text-6xl mb-4 text-gray-200"></i><p class="font-medium">Gian hàng hiện đang trống. Quay lại sau nhé!</p></div>`;
                 }
             } catch (e) { console.log("Lỗi tải Chợ Tool", e); }
         }
@@ -932,7 +980,7 @@
             } else {
                 document.getElementById('pin-input-container').classList.add('hidden');
             }
-            document.getElementById('confirm-purchase-modal').remove('hidden');
+            document.getElementById('confirm-purchase-modal').classList.remove('hidden');
         }
 
         function closeConfirmModal() { document.getElementById('confirm-purchase-modal').classList.add('hidden'); currentPurchase = null; }
@@ -971,7 +1019,10 @@
                 const u = JSON.parse(localStorage.getItem('lmmmo_user')); 
                 if(u) updateUIForLoggedInUser(u.username, u.email); checkPinStatus(); getOrderHistory();
             } 
-            loadCommunityPosts(); loadJobs(); loadPaidTools(); 
+            loadCommunityPosts(); 
+            loadJobs(); 
+            loadPaidTools(); 
+            loadFreeTools(); // GỌI HÀM NÀY ĐỂ WEB TỰ ĐỘNG LẤY TOOL 0đ TỪ ADMIN
         }
     </script>
 </body>
