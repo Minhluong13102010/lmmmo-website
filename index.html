@@ -58,7 +58,7 @@
                 
                 <div class="h-px bg-gray-100 my-1 mx-2"></div>
                 
-               <a href="https://youtube.com/@lmmmo-v7l?si=dNYlQSfV_y0CljQC" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
+                <a href="https://youtube.com/@lmmmo-v7l?si=dNYlQSfV_y0CljQC" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
                     <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-red-600 group-hover:text-white transition shadow-sm"><i class="fab fa-youtube"></i></div>
                     <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LMMMO</p></div>
                 </a>
@@ -509,17 +509,19 @@
 
                     if (currentBalance !== -1 && data.balance > currentBalance) {
                         let addedAmount = data.balance - currentBalance;
-                        document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
-                        document.getElementById('deposit-success-modal').classList.remove('hidden');
-                        document.getElementById('deposit-success-modal').classList.add('flex');
-                        backToDepositForm(); 
+                        if(document.getElementById('deposit-success-amount')) {
+                            document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
+                            document.getElementById('deposit-success-modal').classList.remove('hidden');
+                            document.getElementById('deposit-success-modal').classList.add('flex');
+                            backToDepositForm(); 
+                        }
                     }
                     currentBalance = data.balance; 
 
                     const formattedBal = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
-                    document.getElementById('balance-display').innerText = formattedBal;
-                    document.getElementById('stat-balance').innerText = formattedBal;
-                    document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
+                    if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = formattedBal;
+                    if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = formattedBal;
+                    if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
                     
                     if (data.total_deposit !== undefined) {
                         const fmtDep = new Intl.NumberFormat('vi-VN').format(data.total_deposit) + " đ";
@@ -532,7 +534,7 @@
                             document.getElementById('profile-stat-bal').innerText = formattedBal.toUpperCase();
                             document.getElementById('profile-stat-deposit').innerText = fmtDep.toUpperCase();
                             document.getElementById('profile-stat-spent').innerText = fmtSpent.toUpperCase();
-                            document.getElementById('profile-stat-orders').innerText = data.order_count + " ĐƠN";
+                            document.getElementById('profile-stat-orders').innerText = (data.order_count || 0) + " ĐƠN";
                             document.getElementById('profile-stat-profit').innerText = fmtDep.toUpperCase(); 
                         }
                     }
@@ -611,10 +613,16 @@
             document.getElementById('profile-email').innerText = e || "Chưa có"; 
             document.getElementById('profile-avatar-letter').innerText = u.charAt(0); 
             localStorage.setItem('is_logged_in', 'true'); 
+            
+            // Hiện trạng thái "..." chờ load để biết web chưa chết
+            if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = "..."; 
+            if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = "..."; 
+            if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = "...";
+            
             currentBalance = -1; 
             fetchRealBalance(u);
             if(balanceInterval) clearInterval(balanceInterval);
-            balanceInterval = setInterval(() => fetchRealBalance(u), 5000);
+            balanceInterval = setInterval(() => fetchRealBalance(u), 10000);
         }
         
         function logout() { 
@@ -622,11 +630,13 @@
             document.getElementById('btn-show-login').classList.remove('hidden'); 
             document.getElementById('user-profile-btn').classList.add('hidden'); 
             document.getElementById('user-profile-btn').classList.remove('block'); 
-            document.getElementById('balance-display').innerText = "0 đ"; 
-            document.getElementById('stat-balance').innerText = "0 đ"; 
-            document.getElementById('deposit-page-balance').innerText = "0"; 
+            
+            if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = "0 đ"; 
+            if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = "0 đ"; 
+            if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = "0"; 
             if(document.getElementById('stat-total-deposit')) document.getElementById('stat-total-deposit').innerText = "0 đ";
             if(document.getElementById('stat-total-spent')) document.getElementById('stat-total-spent').innerText = "0 đ";
+            
             document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG TRỞ LẠI,"; 
             document.getElementById('welcome-name').innerText = "KHÁCH"; 
             document.getElementById('banner-login-btn').classList.remove('hidden'); 
@@ -888,14 +898,12 @@
         // ==========================================
         async function loadFreeTools() {
             try {
-                // Mượn luôn API của Chợ Tool Trả Phí
                 let res = await fetch(`${BACKEND_URL}/paid-tools/`);
                 let data = await res.json();
                 
                 let list = document.getElementById('free-tool-list');
                 list.innerHTML = ''; 
                 
-                // Lọc ma thuật: Chỉ lấy những Tool Sếp đặt giá = 0 trên Admin
                 let freeTools = data.tools ? data.tools.filter(t => t.price === 0 || t.price === "0") : [];
                 
                 if (freeTools.length > 0) {
@@ -931,7 +939,6 @@
                 let data = await res.json();
                 let shop = document.getElementById('resource-tab'); 
                 
-                // Lọc: Chỉ lấy Tool có giá > 0 hiển thị ở Chợ
                 let paidTools = data.tools ? data.tools.filter(t => t.price > 0) : [];
 
                 if (paidTools.length > 0) {
@@ -1005,8 +1012,14 @@
                 
                 if (res.ok) {
                     closeConfirmModal(); showToast("Thanh toán thành công!");
-                    let balanceEl = document.getElementById('balance-display');
-                    if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
+                    
+                    // CẬP NHẬT ĐỒNG LOẠT TOÀN BỘ SỐ DƯ Ở TẤT CẢ CÁC TRANG CÙNG 1 LÚC
+                    let newBalStr = new Intl.NumberFormat('vi-VN').format(data.new_balance);
+                    if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = newBalStr + " đ";
+                    if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = newBalStr + " đ";
+                    if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = newBalStr;
+                    if(document.getElementById('profile-stat-bal')) document.getElementById('profile-stat-bal').innerText = newBalStr.toUpperCase() + " Đ";
+                    
                     loadPaidTools(); getOrderHistory(); 
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
                     viewOrderDetails('tool', savedToolName, data.download_link);
@@ -1022,7 +1035,7 @@
             loadCommunityPosts(); 
             loadJobs(); 
             loadPaidTools(); 
-            loadFreeTools(); // GỌI HÀM NÀY ĐỂ WEB TỰ ĐỘNG LẤY TOOL 0đ TỪ ADMIN
+            loadFreeTools();
         }
     </script>
 </body>
