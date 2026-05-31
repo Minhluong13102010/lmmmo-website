@@ -46,7 +46,7 @@
                 <button onclick="toggleSupportMenu()" class="text-white/80 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-3 flex flex-col gap-1">
-                <a href="https://zalo.me/0967220231" target="_blank" class="flex items-center gap-4 p-3 hover:bg-blue-50 rounded-2xl transition group border border-transparent hover:border-blue-100">
+                <a href="https://zalo.me/0346099785" target="_blank" class="flex items-center gap-4 p-3 hover:bg-blue-50 rounded-2xl transition group border border-transparent hover:border-blue-100">
                     <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition shadow-sm"><i class="fas fa-user-tie"></i></div>
                     <div><p class="font-black text-gray-800 text-sm">Chat Zalo Admin</p><p class="text-xs text-gray-500 font-medium mt-0.5">Lương Minh - Lmmmo</p></div>
                 </a>
@@ -58,14 +58,14 @@
                 
                 <div class="h-px bg-gray-100 my-1 mx-2"></div>
                 
-                <a href="https://youtube.com/@lmmmo-v7l?si=dNYlQSfV_y0CljQC" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
+                <a href="LINK_YOUTUBE_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
                     <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-red-600 group-hover:text-white transition shadow-sm"><i class="fab fa-youtube"></i></div>
-                    <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LMMMO</p></div>
+                    <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LBMDEV - Review Tool</p></div>
                 </a>
                 
-                <a href="https://www.tiktok.com/@lmmmostore?_r=1&_t=ZS-96UA4e4pCTs" target="_blank" class="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-2xl transition group border border-transparent hover:border-gray-300">
+                <a href="LINK_TIKTOK_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-2xl transition group border border-transparent hover:border-gray-300">
                     <div class="w-12 h-12 bg-gray-200 text-gray-800 rounded-xl flex items-center justify-center text-2xl group-hover:bg-black group-hover:text-white transition shadow-sm"><i class="fab fa-tiktok"></i></div>
-                    <div><p class="font-black text-gray-800 text-sm">Kênh TikTok</p><p class="text-xs text-gray-500 font-medium mt-0.5">LMMMO-STORE</p></div>
+                    <div><p class="font-black text-gray-800 text-sm">Kênh TikTok</p><p class="text-xs text-gray-500 font-medium mt-0.5">LBMDEV - Live & Tuts</p></div>
                 </a>
             </div>
         </div>
@@ -509,19 +509,17 @@
 
                     if (currentBalance !== -1 && data.balance > currentBalance) {
                         let addedAmount = data.balance - currentBalance;
-                        if(document.getElementById('deposit-success-amount')) {
-                            document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
-                            document.getElementById('deposit-success-modal').classList.remove('hidden');
-                            document.getElementById('deposit-success-modal').classList.add('flex');
-                            backToDepositForm(); 
-                        }
+                        document.getElementById('deposit-success-amount').innerText = new Intl.NumberFormat('vi-VN').format(addedAmount) + " Đ";
+                        document.getElementById('deposit-success-modal').classList.remove('hidden');
+                        document.getElementById('deposit-success-modal').classList.add('flex');
+                        backToDepositForm(); 
                     }
                     currentBalance = data.balance; 
 
                     const formattedBal = new Intl.NumberFormat('vi-VN').format(data.balance) + " đ";
-                    if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = formattedBal;
-                    if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = formattedBal;
-                    if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
+                    document.getElementById('balance-display').innerText = formattedBal;
+                    document.getElementById('stat-balance').innerText = formattedBal;
+                    document.getElementById('deposit-page-balance').innerText = new Intl.NumberFormat('vi-VN').format(data.balance);
                     
                     if (data.total_deposit !== undefined) {
                         const fmtDep = new Intl.NumberFormat('vi-VN').format(data.total_deposit) + " đ";
@@ -534,7 +532,7 @@
                             document.getElementById('profile-stat-bal').innerText = formattedBal.toUpperCase();
                             document.getElementById('profile-stat-deposit').innerText = fmtDep.toUpperCase();
                             document.getElementById('profile-stat-spent').innerText = fmtSpent.toUpperCase();
-                            document.getElementById('profile-stat-orders').innerText = (data.order_count || 0) + " ĐƠN";
+                            document.getElementById('profile-stat-orders').innerText = data.order_count + " ĐƠN";
                             document.getElementById('profile-stat-profit').innerText = fmtDep.toUpperCase(); 
                         }
                     }
@@ -613,16 +611,10 @@
             document.getElementById('profile-email').innerText = e || "Chưa có"; 
             document.getElementById('profile-avatar-letter').innerText = u.charAt(0); 
             localStorage.setItem('is_logged_in', 'true'); 
-            
-            // Hiện trạng thái "..." chờ load để biết web chưa chết
-            if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = "..."; 
-            if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = "..."; 
-            if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = "...";
-            
             currentBalance = -1; 
             fetchRealBalance(u);
             if(balanceInterval) clearInterval(balanceInterval);
-            balanceInterval = setInterval(() => fetchRealBalance(u), 10000);
+            balanceInterval = setInterval(() => fetchRealBalance(u), 5000);
         }
         
         function logout() { 
@@ -630,13 +622,11 @@
             document.getElementById('btn-show-login').classList.remove('hidden'); 
             document.getElementById('user-profile-btn').classList.add('hidden'); 
             document.getElementById('user-profile-btn').classList.remove('block'); 
-            
-            if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = "0 đ"; 
-            if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = "0 đ"; 
-            if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = "0"; 
+            document.getElementById('balance-display').innerText = "0 đ"; 
+            document.getElementById('stat-balance').innerText = "0 đ"; 
+            document.getElementById('deposit-page-balance').innerText = "0"; 
             if(document.getElementById('stat-total-deposit')) document.getElementById('stat-total-deposit').innerText = "0 đ";
             if(document.getElementById('stat-total-spent')) document.getElementById('stat-total-spent').innerText = "0 đ";
-            
             document.getElementById('welcome-prefix').innerText = "CHÀO MỪNG TRỞ LẠI,"; 
             document.getElementById('welcome-name').innerText = "KHÁCH"; 
             document.getElementById('banner-login-btn').classList.remove('hidden'); 
@@ -893,57 +883,14 @@
 
         let currentPurchase = null; 
 
-        // ==========================================
-        // TOOL FREE: LẤY TOOL CÓ GIÁ = 0 Đ TỪ ADMIN
-        // ==========================================
-        async function loadFreeTools() {
-            try {
-                let res = await fetch(`${BACKEND_URL}/paid-tools/`);
-                let data = await res.json();
-                
-                let list = document.getElementById('free-tool-list');
-                list.innerHTML = ''; 
-                
-                let freeTools = data.tools ? data.tools.filter(t => t.price === 0 || t.price === "0") : [];
-                
-                if (freeTools.length > 0) {
-                    document.getElementById('empty-free-tool-msg').style.display = 'none';
-                    freeTools.forEach(t => {
-                        let safeDesc = encodeURIComponent(t.description || '');
-                        let html = `
-                        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl hover:border-green-300 transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', 0, '${safeDesc}')">
-                            <div class="flex justify-between items-start mb-3">
-                                <h3 class="font-bold text-xl text-gray-800 line-clamp-1">${t.name}</h3>
-                                <span class="bg-green-100 text-green-600 text-[10px] font-black px-2 py-1 rounded uppercase animate-pulse shrink-0 border border-green-200">FREE</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mb-4 font-bold"><i class="fas fa-download text-primary-500"></i> Lượt tải: ${t.sold_count}</p>
-                            <p class="text-gray-600 text-sm mb-6 leading-relaxed flex-1 line-clamp-3">${t.description}</p>
-                            
-                            <button onclick="event.stopPropagation(); buyTool(${t.id}, '${t.name}', 0)" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex justify-center items-center gap-2">
-                                <i class="fas fa-link"></i> LẤY LINK TẢI BẢN FREE
-                            </button>
-                        </div>`;
-                        list.insertAdjacentHTML('beforeend', html);
-                    });
-                } else {
-                    document.getElementById('empty-free-tool-msg').style.display = 'block';
-                }
-            } catch (e) {
-                console.log("Lỗi tải Free Tool:", e);
-            }
-        }
-
         async function loadPaidTools() {
             try {
                 let res = await fetch(`${BACKEND_URL}/paid-tools/`);
                 let data = await res.json();
                 let shop = document.getElementById('resource-tab'); 
-                
-                let paidTools = data.tools ? data.tools.filter(t => t.price > 0) : [];
-
-                if (paidTools.length > 0) {
+                if (data.tools && data.tools.length > 0) {
                     let html = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
-                    paidTools.forEach(t => {
+                    data.tools.forEach(t => {
                         let safeDesc = encodeURIComponent(t.description || '');
                         html += `
                         <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 hover:shadow-xl transition flex flex-col cursor-pointer" onclick="openToolDetail(${t.id}, '${t.name}', ${t.price}, '${safeDesc}')">
@@ -957,8 +904,6 @@
                     });
                     html += `</div>`;
                     shop.innerHTML = html;
-                } else {
-                    shop.innerHTML = `<div class="mb-6 border-b border-gray-200 pb-4"><h2 class="text-3xl font-black uppercase text-gray-800">Chợ Tool Trả Phí</h2></div><div class="text-center text-gray-400 mt-16"><i class="fas fa-box-open text-6xl mb-4 text-gray-200"></i><p class="font-medium">Gian hàng hiện đang trống. Quay lại sau nhé!</p></div>`;
                 }
             } catch (e) { console.log("Lỗi tải Chợ Tool", e); }
         }
@@ -987,7 +932,7 @@
             } else {
                 document.getElementById('pin-input-container').classList.add('hidden');
             }
-            document.getElementById('confirm-purchase-modal').classList.remove('hidden');
+            document.getElementById('confirm-purchase-modal').remove('hidden');
         }
 
         function closeConfirmModal() { document.getElementById('confirm-purchase-modal').classList.add('hidden'); currentPurchase = null; }
@@ -1012,14 +957,8 @@
                 
                 if (res.ok) {
                     closeConfirmModal(); showToast("Thanh toán thành công!");
-                    
-                    // CẬP NHẬT ĐỒNG LOẠT TOÀN BỘ SỐ DƯ Ở TẤT CẢ CÁC TRANG CÙNG 1 LÚC
-                    let newBalStr = new Intl.NumberFormat('vi-VN').format(data.new_balance);
-                    if(document.getElementById('balance-display')) document.getElementById('balance-display').innerText = newBalStr + " đ";
-                    if(document.getElementById('stat-balance')) document.getElementById('stat-balance').innerText = newBalStr + " đ";
-                    if(document.getElementById('deposit-page-balance')) document.getElementById('deposit-page-balance').innerText = newBalStr;
-                    if(document.getElementById('profile-stat-bal')) document.getElementById('profile-stat-bal').innerText = newBalStr.toUpperCase() + " Đ";
-                    
+                    let balanceEl = document.getElementById('balance-display');
+                    if(balanceEl) balanceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.new_balance) + " đ";
                     loadPaidTools(); getOrderHistory(); 
                     document.getElementById('order-detail-title').innerText = "GIAO DỊCH THÀNH CÔNG";
                     viewOrderDetails('tool', savedToolName, data.download_link);
@@ -1032,10 +971,7 @@
                 const u = JSON.parse(localStorage.getItem('lmmmo_user')); 
                 if(u) updateUIForLoggedInUser(u.username, u.email); checkPinStatus(); getOrderHistory();
             } 
-            loadCommunityPosts(); 
-            loadJobs(); 
-            loadPaidTools(); 
-            loadFreeTools();
+            loadCommunityPosts(); loadJobs(); loadPaidTools(); 
         }
     </script>
 </body>
