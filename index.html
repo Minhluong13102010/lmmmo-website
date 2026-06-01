@@ -60,12 +60,12 @@
                 
                 <a href="LINK_YOUTUBE_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
                     <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-red-600 group-hover:text-white transition shadow-sm"><i class="fab fa-youtube"></i></div>
-                    <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LBMDEV - Review Tool</p></div>
+                    <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LMMMO</p></div>
                 </a>
                 
                 <a href="LINK_TIKTOK_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-2xl transition group border border-transparent hover:border-gray-300">
                     <div class="w-12 h-12 bg-gray-200 text-gray-800 rounded-xl flex items-center justify-center text-2xl group-hover:bg-black group-hover:text-white transition shadow-sm"><i class="fab fa-tiktok"></i></div>
-                    <div><p class="font-black text-gray-800 text-sm">Kênh TikTok</p><p class="text-xs text-gray-500 font-medium mt-0.5">LBMDEV - Live & Tuts</p></div>
+                    <div><p class="font-black text-gray-800 text-sm">Kênh TikTok</p><p class="text-xs text-gray-500 font-medium mt-0.5">lmmmostore</p></div>
                 </a>
             </div>
         </div>
@@ -501,7 +501,8 @@
 
         async function fetchRealBalance(username) {
             try {
-                const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`);
+                // ĐÃ THÊM LỆNH XÓA CACHE ĐỂ NẢY TIỀN NHANH NHƯ ĐIỆN
+                const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`, { cache: 'no-store' });
                 if (response.ok) {
                     const data = await response.json();
                     
@@ -649,7 +650,8 @@
             if(localStorage.getItem('is_logged_in') !== 'true') return;
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             try {
-                let res = await fetch(`${BACKEND_URL}/history/?username=${u}`);
+                // THÊM XÓA CACHE
+                let res = await fetch(`${BACKEND_URL}/history/?username=${u}`, { cache: 'no-store' });
                 if(res.ok) {
                     let data = await res.json();
                     let tbody = document.querySelector('#history-modal tbody');
@@ -732,7 +734,8 @@
 
         async function loadCommunityPosts() {
             try {
-                let res = await fetch(`${BACKEND_URL}/community/`);
+                // THÊM XÓA CACHE
+                let res = await fetch(`${BACKEND_URL}/community/`, { cache: 'no-store' });
                 let data = await res.json();
                 let feed = document.getElementById('newsfeed');
                 feed.innerHTML = ''; 
@@ -819,7 +822,8 @@
 
         async function loadJobs() {
             try {
-                let res = await fetch(`${BACKEND_URL}/jobs/`);
+                // THÊM XÓA CACHE
+                let res = await fetch(`${BACKEND_URL}/jobs/`, { cache: 'no-store' });
                 let data = await res.json();
                 let list = document.getElementById('job-list'); list.innerHTML = '';
                 if(data.jobs && data.jobs.length > 0) {
@@ -885,7 +889,8 @@
 
         async function loadPaidTools() {
             try {
-                let res = await fetch(`${BACKEND_URL}/paid-tools/`);
+                // THÊM XÓA CACHE ĐỂ NẢY TOOL NHANH
+                let res = await fetch(`${BACKEND_URL}/paid-tools/`, { cache: 'no-store' });
                 let data = await res.json();
                 let shop = document.getElementById('resource-tab'); 
                 if (data.tools && data.tools.length > 0) {
@@ -925,14 +930,14 @@
             document.getElementById('confirm-tool-name').innerText = toolName;
             document.getElementById('confirm-tool-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + " VNĐ";
             
-            // XỬ LÝ MÃ PIN GIAO DỊCH
             if (window.user_has_pin) {
                 document.getElementById('pin-input-container').classList.remove('hidden');
                 document.getElementById('confirm-pin-input').value = '';
             } else {
                 document.getElementById('pin-input-container').classList.add('hidden');
             }
-            document.getElementById('confirm-purchase-modal').remove('hidden');
+            // ĐÃ FIX LỖI "REMOVE" THÀNH "CLASSLIST.REMOVE" TẠI ĐÂY:
+            document.getElementById('confirm-purchase-modal').classList.remove('hidden');
         }
 
         function closeConfirmModal() { document.getElementById('confirm-purchase-modal').classList.add('hidden'); currentPurchase = null; }
