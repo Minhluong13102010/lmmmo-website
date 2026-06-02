@@ -31,6 +31,7 @@
         <div class="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
         <span class="text-primary-700 font-bold tracking-widest text-sm uppercase">Đang tải dữ liệu...</span>
     </div>
+    
     <div id="toast-notification" class="fixed top-5 right-5 z-[9999] transform transition-all duration-500 translate-x-[150%] opacity-0 flex items-center gap-3 bg-white px-6 py-4 rounded-3xl shadow-2xl border-l-4 border-primary-500">
         <div id="toast-icon-wrap" class="w-8 h-8 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-lg"><i id="toast-icon" class="fas fa-check"></i></div>
         <span id="toast-message" class="font-bold text-gray-800 text-sm">Thành công!</span>
@@ -403,7 +404,7 @@
             <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center"><h2 class="text-xl font-black text-gray-800 uppercase tracking-widest"><i class="fas fa-shopping-bag text-primary-500 mr-2"></i> Lịch Sử Mua Hàng</h2><button onclick="closeHistoryModal()" class="text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button></div>
             <div class="p-0 overflow-y-auto flex-1">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 sticky top-0"><tr class="border-b border-gray-200"><th class="px-6 py-4 text-xs text-gray-500 font-bold uppercase tracking-wider w-1/4">Thời gian</th><th class="px-6 py-4 text-xs text-gray-500 font-bold uppercase tracking-wider w-2/4">Tên mặt hàng</th><th class="px-6 py-4 text-xs text-gray-500 font-bold uppercase tracking-wider w-1/4 text-right">Chi tiết</th></tr></thead>
+                    <thead class="bg-gray-50 sticky top-0"><tr class="border-b border-gray-200"><th class="px-6 py-4 text-xs text-gray-500 font-bold uppercase tracking-wider w-1/4">Thời gian</th><th class="px-6 py-4 text-xs text-gray-500 font-bold uppercase tracking-wider w-2/4">Tên mặt hàng</th><th class="px-6 py-4 text-xs text-gray-500 font-bold uppercase tracking-wider w-1/4 text-right">Hành động</th></tr></thead>
                     <tbody class="divide-y divide-gray-100">
                         <tr><td colspan="3" class="text-center py-8 text-gray-400 text-sm italic">Chưa có lịch sử mua hàng nào.</td></tr>
                     </tbody>
@@ -513,6 +514,42 @@
 
         <div id="register-form" class="hidden"><div class="space-y-3"><input type="email" id="reg-email" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Địa chỉ Email"><input type="text" id="reg-username" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Tên hiển thị"><input type="password" id="reg-password" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Mật khẩu (Ít nhất 6 ký tự)"><input type="password" id="reg-confirm" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 outline-none focus:border-primary-500" placeholder="Xác nhận lại mật khẩu"><div id="reg-error" class="text-red-500 text-sm hidden font-medium text-center bg-red-50 p-2 rounded-lg"></div><button onclick="handleRegister()" class="w-full bg-gray-900 text-white font-bold rounded-xl py-3.5 hover:bg-black shadow-md mt-2">Đăng ký</button></div><p class="text-center text-sm text-gray-500 mt-5 font-medium">Đã có tài khoản? <button onclick="switchAuthView('login')" class="text-primary-600 font-bold hover:underline">Đăng nhập</button></p></div>
     </div></div></div>
+
+    <div id="keygen-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[160] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative border-t-8 border-primary-500 transform transition-all">
+            <button onclick="document.getElementById('keygen-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition"><i class="fas fa-times"></i></button>
+            
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-primary-600 to-primary-400 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-primary-200 animate-bounce"><i class="fas fa-key"></i></div>
+                    <h3 class="text-2xl font-black text-gray-800 uppercase tracking-tight">KÍCH HOẠT BẢN QUYỀN</h3>
+                    <p class="text-sm text-gray-500 mt-2 font-medium">Tool: <strong class="text-primary-600 text-base" id="keygen-tool-name">Tên Tool</strong></p>
+                </div>
+
+                <div class="space-y-5">
+                    <div id="keygen-input-area" class="bg-gray-50 p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2"><i class="fas fa-desktop text-primary-500 mr-1"></i> Nhập Mã Máy (HWID) <span class="text-red-500">*</span></label>
+                        <input type="text" id="hwid-input" class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3.5 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 text-sm font-mono tracking-wider text-gray-800 transition shadow-inner" placeholder="VD: BFEBFBFF000906EA...">
+                        <div class="mt-3 p-3 bg-orange-50 border border-orange-100 rounded-lg flex gap-2 items-start">
+                            <i class="fas fa-exclamation-triangle text-orange-500 mt-0.5"></i>
+                            <p class="text-[10px] text-orange-700 font-bold leading-relaxed">Cảnh báo: License Key chỉ cấp DUY NHẤT 1 LẦN cho 1 Máy Tính. Tuyệt đối không nhập sai mã HWID!</p>
+                        </div>
+                        <button onclick="requestLicenseKey()" id="btn-get-key" class="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white font-black py-3.5 rounded-xl hover:from-primary-700 hover:to-primary-600 transition shadow-lg shadow-primary-200 mt-5 uppercase tracking-widest text-sm"><i class="fas fa-unlock-alt mr-2"></i> LẤY MÃ KÍCH HOẠT</button>
+                    </div>
+
+                    <div id="keygen-result-area" class="hidden bg-green-50 border-2 border-green-500 p-6 rounded-2xl text-center shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-lg tracking-widest"><i class="fas fa-check mr-1"></i>THÀNH CÔNG</div>
+                        <p class="text-sm font-black text-green-700 uppercase mb-3"><i class="fas fa-shield-check text-xl block mb-1"></i> KEY BẢN QUYỀN VĨNH VIỄN</p>
+                        <div class="bg-white border border-green-200 p-4 rounded-xl mb-4 shadow-inner">
+                            <p id="result-hwid" class="text-xs text-gray-500 font-mono mb-2 border-b border-gray-100 pb-2">HWID: XXX</p>
+                            <p id="result-license-key" class="text-xl font-black text-gray-900 tracking-widest font-mono select-all">XXXX-XXXX-XXXX-XXXX</p>
+                        </div>
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2 uppercase tracking-wider text-sm" onclick="copyKey()"><i class="fas fa-copy"></i> Copy Key Ngay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const BACKEND_URL = 'https://api-lmmmo.onrender.com';
@@ -681,10 +718,14 @@
                     tbody.innerHTML = '';
                     if(data.history && data.history.length > 0) {
                         data.history.forEach(o => {
+                            // THÊM NÚT LẤY KEY VÀO BẢNG LỊCH SỬ
                             tbody.innerHTML += `<tr>
                                 <td class="px-6 py-4 border-b border-gray-100 text-sm text-gray-500 font-medium">${o.date}</td>
                                 <td class="px-6 py-4 border-b border-gray-100 text-sm font-bold text-gray-800">${o.item_name}</td>
-                                <td class="px-6 py-4 border-b border-gray-100 text-right"><button onclick="viewOrderDetails('tool', '${o.item_name}', '${o.delivered_data}')" class="text-primary-600 bg-primary-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary-100 transition shadow-sm border border-primary-100">Xem Link/Nick</button></td>
+                                <td class="px-6 py-4 border-b border-gray-100 text-right">
+                                    <button onclick="viewOrderDetails('tool', '${o.item_name}', '${o.delivered_data}')" class="text-primary-600 bg-primary-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary-100 transition shadow-sm border border-primary-100 mb-2 block w-full text-center"><i class="fas fa-download mr-1"></i> Xem Link Tải</button>
+                                    <button onclick="openKeygenModal('${o.item_name}')" class="text-white bg-gray-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-black transition shadow-sm block w-full text-center"><i class="fas fa-key mr-1"></i> Lấy Key HWID</button>
+                                </td>
                             </tr>`;
                         });
                     } else { tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-gray-400 text-sm italic">Chưa có lịch sử mua hàng nào.</td></tr>'; }
@@ -902,7 +943,10 @@
             document.getElementById('job-detail-desc').innerText = decodeURIComponent(safeDesc); 
             document.getElementById('job-detail-author').innerText = a; 
             let btn = document.getElementById('btn-apply-job');
-            btn.onclick = function() { if(z) { window.open(z, '_blank'); } else { alert(`Vui lòng copy tên người đăng [ ${a} ] và tìm kiếm trong nhóm Cộng Đồng Zalo của LMMMO để trao đổi trực tiếp!`); } };
+            btn.onclick = function() { 
+                if(z) { window.open(z, '_blank'); } 
+                else { showToast(`Vui lòng copy tên [ ${a} ] và tìm trong nhóm Zalo LMMMO!`); } 
+            };
             switchTab('job-detail-tab'); 
         } 
 
@@ -988,6 +1032,58 @@
                     viewOrderDetails('tool', savedToolName, data.download_link);
                 } else { showToast("Lỗi: " + data.error, true); }
             } catch (e) { console.log("Bug JS:", e); closeConfirmModal(); showToast("Lỗi kết nối đến máy chủ Két sắt!", true); } finally { btn.innerText = "Xác nhận mua"; btn.disabled = false; }
+        }
+
+        // HÀM XỬ LÝ LẤY KEY BẢN QUYỀN
+        let currentKeygenTool = "";
+
+        function openKeygenModal(toolName) {
+            currentKeygenTool = toolName;
+            document.getElementById('keygen-tool-name').innerText = toolName;
+            document.getElementById('hwid-input').value = "";
+            document.getElementById('keygen-input-area').classList.remove('hidden');
+            document.getElementById('keygen-result-area').classList.add('hidden');
+            document.getElementById('keygen-modal').classList.remove('hidden');
+        }
+
+        async function requestLicenseKey() {
+            const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
+            const hwid = document.getElementById('hwid-input').value.trim();
+            if(!hwid) { showToast("Vui lòng nhập Mã Máy (HWID)!", true); return; }
+
+            const btn = document.getElementById('btn-get-key');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> ĐANG XỬ LÝ...'; 
+            btn.disabled = true;
+
+            try {
+                let res = await fetch(`${BACKEND_URL}/generate-key/`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username: u, tool_name: currentKeygenTool, hwid: hwid })
+                });
+                let data = await res.json();
+
+                if(res.ok) {
+                    document.getElementById('keygen-input-area').classList.add('hidden');
+                    document.getElementById('keygen-result-area').classList.remove('hidden');
+                    document.getElementById('result-hwid').innerText = "MÃ MÁY: " + data.hwid;
+                    document.getElementById('result-license-key').innerText = data.license_key;
+                    
+                    if(data.is_new) showToast("Tạo Key bản quyền thành công!");
+                    else showToast("Hiển thị lại Key cũ đã kích hoạt trước đó!");
+                } else {
+                    showToast(data.error || "Lỗi tạo key!", true);
+                }
+            } catch(e) { showToast("Lỗi máy chủ cấp Key!", true); } 
+            finally { 
+                btn.innerHTML = '<i class="fas fa-unlock-alt mr-2"></i> LẤY MÃ KÍCH HOẠT'; 
+                btn.disabled = false; 
+            }
+        }
+
+        function copyKey() {
+            let keyText = document.getElementById('result-license-key').innerText;
+            navigator.clipboard.writeText(keyText);
+            showToast("Đã copy Key bản quyền!");
         }
 
         window.onload = function() { 
