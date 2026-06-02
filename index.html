@@ -46,9 +46,9 @@
                 <button onclick="toggleSupportMenu()" class="text-white/80 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-3 flex flex-col gap-1">
-                <a href="https://zalo.me/0346099785" target="_blank" class="flex items-center gap-4 p-3 hover:bg-blue-50 rounded-2xl transition group border border-transparent hover:border-blue-100">
+                <a href="https://zalo.me/0967220231" target="_blank" class="flex items-center gap-4 p-3 hover:bg-blue-50 rounded-2xl transition group border border-transparent hover:border-blue-100">
                     <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition shadow-sm"><i class="fas fa-user-tie"></i></div>
-                    <div><p class="font-black text-gray-800 text-sm">Chat Zalo Admin</p><p class="text-xs text-gray-500 font-medium mt-0.5">Lương Minh - Lmmmo</p></div>
+                    <div><p class="font-black text-gray-800 text-sm">Chat Zalo Admin</p><p class="text-xs text-gray-500 font-medium mt-0.5">0967 220 231 - Lmmmo</p></div>
                 </a>
                 
                 <a href="LINK_NHOM_ZALO_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-green-50 rounded-2xl transition group border border-transparent hover:border-green-100">
@@ -58,12 +58,12 @@
                 
                 <div class="h-px bg-gray-100 my-1 mx-2"></div>
                 
-                <a href="LINK_YOUTUBE_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
+                <a href="https://youtube.com/@lmmmo-v7l?si=xAP-tz0m4AKzjJ65" target="_blank" class="flex items-center gap-4 p-3 hover:bg-red-50 rounded-2xl transition group border border-transparent hover:border-red-100">
                     <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-red-600 group-hover:text-white transition shadow-sm"><i class="fab fa-youtube"></i></div>
                     <div><p class="font-black text-gray-800 text-sm">Kênh YouTube</p><p class="text-xs text-gray-500 font-medium mt-0.5">LMMMO</p></div>
                 </a>
                 
-                <a href="LINK_TIKTOK_CUA_SEP_VAO_DAY" target="_blank" class="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-2xl transition group border border-transparent hover:border-gray-300">
+                <a href="https://www.tiktok.com/@lmmmostore?is_from_webapp=1&sender_device=pc" target="_blank" class="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-2xl transition group border border-transparent hover:border-gray-300">
                     <div class="w-12 h-12 bg-gray-200 text-gray-800 rounded-xl flex items-center justify-center text-2xl group-hover:bg-black group-hover:text-white transition shadow-sm"><i class="fab fa-tiktok"></i></div>
                     <div><p class="font-black text-gray-800 text-sm">Kênh TikTok</p><p class="text-xs text-gray-500 font-medium mt-0.5">lmmmostore</p></div>
                 </a>
@@ -442,6 +442,31 @@
         </div>
     </div>
 
+    <div id="job-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[140] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h3 class="font-black text-gray-800 text-xl">Đăng Tin Tuyển Dụng</h3>
+                <button onclick="closeJobModal()" class="text-gray-400 hover:text-red-500 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-4">
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tiêu đề công việc <span class="text-red-500">*</span></label><input type="text" id="job-title" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm" placeholder="VD: Cần thuê tool auto click..."></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Danh mục <span class="text-red-500">*</span></label><select id="job-category" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm"><option value="Code Tool">Code Tool</option><option value="Mua Bán Account">Mua Bán Account</option><option value="Dịch Vụ Khác">Dịch Vụ Khác</option></select></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Hình thức trả lương</label><select id="job-budget-type" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm"><option value="Khoán trọn gói">Khoán trọn gói</option><option value="Theo giờ">Theo giờ</option><option value="Theo tháng">Theo tháng</option></select></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Giá tối thiểu (VNĐ)</label><input type="text" id="job-min-price" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm" placeholder="VD: 100000"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Giá tối đa (VNĐ)</label><input type="text" id="job-max-price" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm" placeholder="VD: 500000"></div>
+                </div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Link Zalo liên hệ <span class="text-red-500">*</span></label><input type="text" id="job-zalo-link" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm" placeholder="VD: https://zalo.me/0967220231"></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Mô tả chi tiết <span class="text-red-500">*</span></label><textarea id="job-desc" rows="5" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:bg-white text-sm" placeholder="Mô tả rõ yêu cầu công việc..."></textarea></div>
+            </div>
+            <div class="p-6 border-t border-gray-100 bg-white">
+                <button onclick="submitJob()" class="w-full bg-primary-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-primary-700 transition">Đăng tin tuyển dụng</button>
+            </div>
+        </div>
+    </div>
+
     <div id="confirm-purchase-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative transform transition-all text-center p-8">
             <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-shopping-cart"></i></div>
@@ -501,7 +526,6 @@
 
         async function fetchRealBalance(username) {
             try {
-                // ĐÃ THÊM LỆNH XÓA CACHE ĐỂ NẢY TIỀN NHANH NHƯ ĐIỆN
                 const response = await fetch(`${BACKEND_URL}/get-profile/?username=${username}`, { cache: 'no-store' });
                 if (response.ok) {
                     const data = await response.json();
@@ -650,7 +674,6 @@
             if(localStorage.getItem('is_logged_in') !== 'true') return;
             const u = JSON.parse(localStorage.getItem('lmmmo_user')).username;
             try {
-                // THÊM XÓA CACHE
                 let res = await fetch(`${BACKEND_URL}/history/?username=${u}`, { cache: 'no-store' });
                 if(res.ok) {
                     let data = await res.json();
@@ -734,7 +757,6 @@
 
         async function loadCommunityPosts() {
             try {
-                // THÊM XÓA CACHE
                 let res = await fetch(`${BACKEND_URL}/community/`, { cache: 'no-store' });
                 let data = await res.json();
                 let feed = document.getElementById('newsfeed');
@@ -822,7 +844,6 @@
 
         async function loadJobs() {
             try {
-                // THÊM XÓA CACHE
                 let res = await fetch(`${BACKEND_URL}/jobs/`, { cache: 'no-store' });
                 let data = await res.json();
                 let list = document.getElementById('job-list'); list.innerHTML = '';
@@ -889,7 +910,6 @@
 
         async function loadPaidTools() {
             try {
-                // THÊM XÓA CACHE ĐỂ NẢY TOOL NHANH
                 let res = await fetch(`${BACKEND_URL}/paid-tools/`, { cache: 'no-store' });
                 let data = await res.json();
                 let shop = document.getElementById('resource-tab'); 
@@ -936,7 +956,6 @@
             } else {
                 document.getElementById('pin-input-container').classList.add('hidden');
             }
-            // ĐÃ FIX LỖI "REMOVE" THÀNH "CLASSLIST.REMOVE" TẠI ĐÂY:
             document.getElementById('confirm-purchase-modal').classList.remove('hidden');
         }
 
